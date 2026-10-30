@@ -1,0 +1,6 @@
+{
+  "name": "Quest Shanghai: Immersion App",
+  "description": "Interactive Overseas Immersion Programme (OIP 2026) companion app for Shanghai DE Group 2 with Quest coin rankings, loot badges, itinerary, leader desk, and Ask Bao AI assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
