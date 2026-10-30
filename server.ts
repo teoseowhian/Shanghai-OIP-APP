@@ -10,7 +10,8 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = 3000;
+// Render injects PORT; fall back to 3000 for local runs
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
