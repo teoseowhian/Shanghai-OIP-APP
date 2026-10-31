@@ -110,7 +110,7 @@ app.post('/api/chat', async (req, res) => {
     } else if (msg.includes('food') || msg.includes('dumpling') || msg.includes('xiaolongbao') || msg.includes('eat')) {
       smartTip = "🐲 Bao says: Craving dumplings? Right near Homeinn Plus Hotel on Yanchang Middle Road, try local eateries or head towards Daning International Commercial Plaza for Shengjianbao and soup dumplings!";
     } else if (msg.includes('phrase') || msg.includes('slang') || msg.includes('language') || msg.includes('chinese')) {
-      smartTip = "🐲 Bao says: Try these 3 Shanghainese survival phrases: 1) 'Nong Hao' (侬好 - Hello), 2) 'Xie Xie Nong' (谢谢侬 - Thank you), 3) 'Mibaobu' (没搞头 - No big deal) or ask 'Duo Shao Qi' (多少钿 - How much?)!";
+      smartTip = "🐲 Bao says: Try these 3 Shanghainese survival phrases: 1) 'Nong Hao' (侬好 - Hello), 2) 'Xie Xie Nong' (谢谢侬 - Thank you), 3) 'Jie Gun' (结棍 - Awesome!), or ask 'Duo Shao Tie' (多少钿 - How much?)! Switch to the '🗣️ Phrases' tab in the top navigation to listen to native audio and complete the Daily Challenge for +5 Coins!";
     } else if (msg.includes('emergency') || msg.includes('contact') || msg.includes('call') || msg.includes('lost')) {
       smartTip = "🐲 Bao says: If you are separated: 1) Contact Class Rep Latasha or Assis Ren ZhuoJing, 2) Show any taxi driver our Chinese Taxi Address Card in the header (Homeinn Plus Hotel, Yanchang Middle Road 302 / 中国上海市静安区延长中路302号)!";
     } else if (msg.includes('coin') || msg.includes('grade') || msg.includes('quest')) {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Trophy, ClipboardList, Gift, MapPin, User, Sparkles, Luggage, GraduationCap, ClipboardCheck } from 'lucide-react';
+import { Trophy, ClipboardList, Gift, MapPin, User, Sparkles, Luggage, GraduationCap, ClipboardCheck, Languages } from 'lucide-react';
 import { Student } from '../data/tripData';
 
 interface HeaderProps {
-  activeTab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'survey';
-  setActiveTab: (tab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'survey') => void;
+  activeTab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey';
+  setActiveTab: (tab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey') => void;
   currentStudent: Student;
   onSelectStudent: (studentId: string) => void;
   allStudents: Student[];
@@ -126,6 +126,18 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <MapPin className={`w-4 h-4 ${activeTab === 'itinerary' ? 'text-amber-300' : 'text-indigo-500'}`} />
               <span>Itinerary</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('phrasebook')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
+                activeTab === 'phrasebook'
+                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-400/50'
+                  : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+              }`}
+            >
+              <Languages className={`w-4 h-4 ${activeTab === 'phrasebook' ? 'text-amber-300' : 'text-teal-600'}`} />
+              <span>🗣️ Phrases</span>
             </button>
 
             <button

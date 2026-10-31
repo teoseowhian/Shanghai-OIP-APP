@@ -14,6 +14,7 @@ import { AskBaoBot } from './components/AskBaoBot';
 import { PackingListModal } from './components/PackingListModal';
 import { DeliverablesModal } from './components/DeliverablesModal';
 import { SurveyView } from './components/SurveyView';
+import { PhrasebookView } from './components/PhrasebookView';
 import {
   INITIAL_STUDENTS,
   INITIAL_QUESTS,
@@ -24,7 +25,7 @@ import {
 } from './data/tripData';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'survey'>('rankings');
+  const [activeTab, setActiveTab] = useState<'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey'>('rankings');
   const [students, setStudents] = useState<Student[]>(INITIAL_STUDENTS);
   const [currentStudentId, setCurrentStudentId] = useState<string>('s1');
   const [quests, setQuests] = useState<Quest[]>(INITIAL_QUESTS);
@@ -175,6 +176,13 @@ export default function App() {
           <ItineraryView
             onCheckInEvent={handleCheckInEvent}
             onOpenPackingList={() => setShowPackingModal(true)}
+          />
+        )}
+
+        {activeTab === 'phrasebook' && (
+          <PhrasebookView
+            currentStudent={currentStudent}
+            onModifyCoins={handleModifyCoins}
           />
         )}
 
