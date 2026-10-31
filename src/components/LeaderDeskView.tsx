@@ -18,6 +18,12 @@ import {
   GraduationCap,
   Download,
   Sparkles,
+  CheckCircle2,
+  XCircle,
+  ExternalLink,
+  Image as ImageIcon,
+  Camera,
+  Eye,
 } from 'lucide-react';
 import { Student, Announcement } from '../data/tripData';
 import {
@@ -26,10 +32,32 @@ import {
   SURVEY_QUESTIONS,
   SurveyResponse,
 } from '../data/surveyData';
+import { getLinkMeta } from './LootBadgesView';
+
+export interface QuestClaim {
+  id: string;
+  studentId: string;
+  studentName: string;
+  questId: string;
+  questTitle: string;
+  coins: number;
+  badgeName: string;
+  badgeLevel: string;
+  icon: string;
+  status: 'pending' | 'approved' | 'rejected';
+  proofPhotoUrl?: string;
+  proofLink?: string;
+  proofNote?: string;
+  submittedAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+}
 
 interface LeaderDeskViewProps {
   students: Student[];
   announcements: Announcement[];
+  claims?: QuestClaim[];
+  onReviewClaim?: (claimId: string, action: 'approve' | 'reject') => void;
   onToggleAttendance: (studentId: string, newStatus: 'present' | 'late' | 'excused') => void;
   onAddAnnouncement: (announcement: Omit<Announcement, 'id' | 'timestamp'>) => void;
   isLeader: boolean;
@@ -38,11 +66,14 @@ interface LeaderDeskViewProps {
 export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
   students,
   announcements,
+  claims = [],
+  onReviewClaim,
   onToggleAttendance,
   onAddAnnouncement,
   isLeader,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'attendance' | 'hotel' | 'budget' | 'notices' | 'research'>('attendance');
+  const [activeSubTab, setActiveSubTab] = useState<'approvals' | 'attendance' | 'hotel' | 'budget' | 'notices' | 'research'>('approvals');
+  const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null);
 
   if (!isLeader) {
     return (
@@ -130,8 +161,25 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
         {/* Sub-nav switcher */}
         <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-2xl border border-slate-700 overflow-x-auto">
           <button
+            onClick={() => setActiveSubTab('approvals')}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              activeSubTab === 'approvals'
+                ? 'bg-amber-400 text-slate-950 font-black shadow-xs'
+                : 'text-amber-200 hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>Quest Approvals</span>
+            {claims.filter((c) => c.status === 'pending').length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-rose-600 text-white animate-pulse">
+                {claims.filter((c) => c.status === 'pending').length}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => setActiveSubTab('attendance')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeSubTab === 'attendance'
                 ? 'bg-emerald-500 text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
@@ -143,7 +191,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
 
           <button
             onClick={() => setActiveSubTab('hotel')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeSubTab === 'hotel'
                 ? 'bg-emerald-500 text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
@@ -155,7 +203,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
 
           <button
             onClick={() => setActiveSubTab('budget')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeSubTab === 'budget'
                 ? 'bg-emerald-500 text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
@@ -167,7 +215,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
 
           <button
             onClick={() => setActiveSubTab('notices')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeSubTab === 'notices'
                 ? 'bg-emerald-500 text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
@@ -179,7 +227,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
 
           <button
             onClick={() => setActiveSubTab('research')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               activeSubTab === 'research'
                 ? 'bg-emerald-500 text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
@@ -190,6 +238,210 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Photo Preview Modal */}
+      {previewPhotoUrl && (
+        <div
+          onClick={() => setPreviewPhotoUrl(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xs cursor-pointer"
+        >
+          <div className="relative max-w-2xl max-h-[85vh] bg-white rounded-3xl p-2 shadow-2xl overflow-hidden">
+            <img src={previewPhotoUrl} alt="Full preview" className="max-h-[80vh] w-auto object-contain rounded-2xl" />
+            <button
+              onClick={() => setPreviewPhotoUrl(null)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-900/80 text-white font-bold flex items-center justify-center"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Sub-tab 0: Quest Proof Approvals */}
+      {activeSubTab === 'approvals' && (
+        <div className="space-y-5">
+          <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                Live Quest Proof Verification & Approval Queue
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Students upload photo proof or TikTok/Instagram/LinkedIn links. Coins are ONLY added when approved by a leader here.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 text-xs font-bold flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-amber-600" />
+                {claims.filter((c) => c.status === 'pending').length} Pending Approval
+              </span>
+              <span className="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold">
+                {claims.filter((c) => c.status === 'approved').length} Approved
+              </span>
+            </div>
+          </div>
+
+          {/* Pending Queue */}
+          {claims.filter((c) => c.status === 'pending').length === 0 ? (
+            <div className="bg-white rounded-3xl p-10 border border-slate-200 text-center shadow-xs">
+              <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 text-2xl font-bold">
+                ✓
+              </div>
+              <h4 className="text-base font-black text-slate-900">All Quest Proofs Verified!</h4>
+              <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+                No pending claims in the queue. When students submit photos, TikToks, or LinkedIn links for their Shanghai immersion challenges, they will appear here for verification.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-500 block px-1">
+                Pending Verification ({claims.filter((c) => c.status === 'pending').length})
+              </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {claims
+                  .filter((c) => c.status === 'pending')
+                  .map((claim) => {
+                    const linkMeta = getLinkMeta(claim.proofLink);
+                    return (
+                      <div
+                        key={claim.id}
+                        className="bg-white rounded-3xl p-5 border-2 border-amber-300 shadow-md flex flex-col justify-between"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <span className="text-3xl p-2 bg-amber-50 rounded-2xl border border-amber-200">
+                                {claim.icon}
+                              </span>
+                              <div>
+                                <span className="font-black text-sm text-slate-900 block">{claim.studentName}</span>
+                                <span className="text-xs font-bold text-amber-800">{claim.questTitle}</span>
+                              </div>
+                            </div>
+
+                            <div className="px-2.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs shrink-0">
+                              +{claim.coins} Coins
+                            </div>
+                          </div>
+
+                          <div className="text-[11px] text-slate-500 font-medium">
+                            Submitted: <span className="font-mono text-slate-700">{claim.submittedAt}</span>
+                          </div>
+
+                          {/* Proof Content Box */}
+                          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                            {claim.proofPhotoUrl && claim.proofPhotoUrl.startsWith('data:image') && (
+                              <div>
+                                <span className="text-[10px] font-bold text-slate-600 uppercase block mb-1">Photo Proof:</span>
+                                <div
+                                  onClick={() => setPreviewPhotoUrl(claim.proofPhotoUrl!)}
+                                  className="relative rounded-xl overflow-hidden border border-slate-200 cursor-pointer group max-h-48"
+                                >
+                                  <img
+                                    src={claim.proofPhotoUrl}
+                                    alt="Proof thumbnail"
+                                    className="w-full object-cover group-hover:scale-105 transition-transform"
+                                  />
+                                  <div className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">
+                                    <Eye className="w-4 h-4 mr-1" /> Click to View Full Photo
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {claim.proofLink && (
+                              <div>
+                                <span className="text-[10px] font-bold text-slate-600 uppercase block mb-1">Shared Link:</span>
+                                <a
+                                  href={claim.proofLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`w-full py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-between shadow-xs transition-opacity cursor-pointer ${
+                                    linkMeta?.badgeClass || 'bg-slate-900 text-white hover:bg-slate-800'
+                                  }`}
+                                >
+                                  <span className="flex items-center gap-1.5 truncate">
+                                    <span>{linkMeta?.label || 'Open Verification Link'}</span>
+                                  </span>
+                                  <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                                </a>
+                              </div>
+                            )}
+
+                            {claim.proofNote && (
+                              <div>
+                                <span className="text-[10px] font-bold text-slate-600 uppercase block mb-0.5">Student Note:</span>
+                                <p className="text-xs text-slate-800 italic bg-white p-2 rounded-xl border border-slate-200">
+                                  "{claim.proofNote}"
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Leader Actions */}
+                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+                          <button
+                            onClick={() => onReviewClaim && onReviewClaim(claim.id, 'approve')}
+                            className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-95"
+                          >
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Approve (+{claim.coins}c)</span>
+                          </button>
+                          <button
+                            onClick={() => onReviewClaim && onReviewClaim(claim.id, 'reject')}
+                            className="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-200 hover:border-rose-200 transition-all cursor-pointer"
+                          >
+                            <XCircle className="w-4 h-4 text-rose-500" />
+                            <span>Decline</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
+          {/* Past Reviewed Claims */}
+          {claims.filter((c) => c.status !== 'pending').length > 0 && (
+            <div className="mt-6 space-y-3">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-500 block px-1">
+                Recent Approval History ({claims.filter((c) => c.status !== 'pending').length})
+              </span>
+              <div className="bg-white rounded-3xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-xs">
+                {claims
+                  .filter((c) => c.status !== 'pending')
+                  .slice(0, 10)
+                  .map((claim) => (
+                    <div key={claim.id} className="p-3.5 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">{claim.icon}</span>
+                        <div>
+                          <div className="font-bold text-slate-900">{claim.studentName} — {claim.questTitle}</div>
+                          <div className="text-[11px] text-slate-500">
+                            Reviewed: {claim.reviewedAt || 'Recently'} by {claim.reviewedBy || 'Leader'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
+                          claim.status === 'approved'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-rose-100 text-rose-800'
+                        }`}
+                      >
+                        {claim.status === 'approved' ? `✓ +${claim.coins} Coins Approved` : '✕ Declined'}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Sub-tab 1: Roll Call & Attendance */}
       {activeSubTab === 'attendance' && (

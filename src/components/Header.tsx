@@ -3,8 +3,8 @@ import { Trophy, ClipboardList, Gift, MapPin, User, Sparkles, Luggage, Graduatio
 import { Student } from '../data/tripData';
 
 interface HeaderProps {
-  activeTab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey';
-  setActiveTab: (tab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey') => void;
+  activeTab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey' | 'deliverables';
+  setActiveTab: (tab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey' | 'deliverables') => void;
   currentStudent: Student;
   isLeader: boolean;
   onSignOut: () => void;
@@ -153,6 +153,21 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <ClipboardCheck className={`w-4 h-4 ${activeTab === 'survey' ? 'text-amber-300' : 'text-indigo-600'}`} />
               <span>📋 Survey</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('deliverables')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
+                activeTab === 'deliverables'
+                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-400/50'
+                  : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+              }`}
+            >
+              <GraduationCap className={`w-4 h-4 ${activeTab === 'deliverables' ? 'text-amber-300' : 'text-emerald-600'}`} />
+              <span>🎓 Deliverables</span>
+              <span className="hidden xl:inline-flex items-center justify-center px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-emerald-600 text-white">
+                1 LU
+              </span>
             </button>
 
             {/* Quick Deliverables Button */}

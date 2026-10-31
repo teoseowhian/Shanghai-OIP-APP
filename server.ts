@@ -4,6 +4,15 @@ import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
+import {
+  STUDENTS_DATA,
+  INITIAL_QUESTS,
+  INITIAL_ANNOUNCEMENTS,
+  Student,
+  Quest,
+  Announcement,
+} from './src/data/tripData.ts';
 
 dotenv.config();
 
@@ -13,7 +22,9 @@ const app = express();
 // Render injects PORT; fall back to 3000 for local runs
 const PORT = Number(process.env.PORT) || 3000;
 
-app.use(express.json());
+// Enable large JSON payload limits for image/screenshot uploads
+app.use(express.json({ limit: '30mb' }));
+app.use(express.urlencoded({ limit: '30mb', extended: true }));
 
 // Initialize Gemini client with telemetry header
 const ai = new GoogleGenAI({
@@ -25,47 +36,280 @@ const ai = new GoogleGenAI({
   },
 });
 
-// Trip context for Bao (Immersion Trip AI Bot)
+// ==========================================
+// 1. REAL SERVER-SIDE SHARED DATABASE
+// ==========================================
+
+export interface QuestClaim {
+  id: string;
+  studentId: string;
+  studentName: string;
+  questId: string;
+  questTitle: string;
+  coins: number;
+  badgeName: string;
+  badgeLevel: string;
+  icon: string;
+  status: 'pending' | 'approved' | 'rejected';
+  proofPhotoUrl?: string;
+  proofLink?: string;
+  proofNote?: string;
+  submittedAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+}
+
+export interface ActivityLogItem {
+  id: string;
+  studentName: string;
+  delta: number;
+  quest: string;
+  time: string;
+  timestamp: number;
+}
+
+export interface SurveyRecord {
+  id: string;
+  studentId: string;
+  studentName: string;
+  submittedAt: string;
+  answers: Record<string, number>;
+  qualitativeComments: string;
+  suggestions: string;
+}
+
+export interface DeliverablesRecord {
+  studentId: string;
+  linkedInPostUrl?: string;
+  selectedVisits?: string[];
+  reflectionText?: string;
+  isCompleted?: boolean;
+  submittedAt?: string;
+  subtasks?: Record<string, boolean>;
+}
+
+interface DatabaseSchema {
+  students: Student[];
+  quests: Quest[];
+  claims: QuestClaim[];
+  phraseCompletions: Record<string, { lastCompletedDate: string; totalClaims: number }>;
+  surveys: SurveyRecord[];
+  deliverables: Record<string, DeliverablesRecord>;
+  announcements: Announcement[];
+  activityLog: ActivityLogItem[];
+}
+
+const DB_FILE = path.resolve(__dirname, 'data', 'database.json');
+
+// Helper to ensure database file exists and load it
+function loadDatabase(): DatabaseSchema {
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const raw = fs.readFileSync(DB_FILE, 'utf-8');
+      const parsed = JSON.parse(raw);
+      // Validate structure
+      if (parsed.students && Array.isArray(parsed.students)) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('Notice: Re-initializing database file:', err);
+  }
+
+  // Initial Seed
+  const initialDb: DatabaseSchema = {
+    students: STUDENTS_DATA.map((s) => ({ ...s })),
+    quests: INITIAL_QUESTS.map((q) => ({ ...q })),
+    claims: [
+      {
+        id: 'claim_sample_1',
+        studentId: 's1',
+        studentName: 'Latasha Srinidthi Cliffton',
+        questId: 'q1',
+        questTitle: 'The Great Xiaolongbao Quest',
+        coins: 15,
+        badgeName: 'Soup Dumpling Sage',
+        badgeLevel: 'Silver',
+        icon: '🥟',
+        status: 'approved',
+        proofLink: 'https://www.instagram.com/p/DB123456789/',
+        proofNote: 'Ordered in practical Shanghainese with my squad buddies near Jing’An!',
+        submittedAt: 'Nov 8, 19:45',
+        reviewedAt: 'Nov 8, 20:10',
+        reviewedBy: 'Ren ZhuoJing',
+      },
+      {
+        id: 'claim_sample_2',
+        studentId: 's2',
+        studentName: 'Ganesan Mohanapriya',
+        questId: 'q2',
+        questTitle: 'Maglev 300 km/h Speed Run',
+        coins: 20,
+        badgeName: 'Sonic Levitation',
+        badgeLevel: 'Gold',
+        icon: '🚅',
+        status: 'pending',
+        proofLink: 'https://www.tiktok.com/@priya.np/video/7345678901234567890',
+        proofNote: 'Captured the on-board display showing exactly 300 km/h from PVG Terminal 1 to Longyang Road!',
+        submittedAt: 'Nov 8, 17:15',
+      },
+    ],
+    phraseCompletions: {},
+    surveys: [],
+    deliverables: {
+      s1: {
+        studentId: 's1',
+        linkedInPostUrl: 'https://www.linkedin.com/feed/update/urn:li:activity:7521889898648358912/',
+        selectedVisits: ['ebm-papst factory', 'Shanghai Jiao Tong University Building Lab'],
+        reflectionText: 'Deep reflection comparing industrial EC fan motor precision engineering at ebm-papst with SJTU Building Environment Lab green energy research.',
+        isCompleted: true,
+        submittedAt: 'Nov 6, 2026',
+        subtasks: { safety_quiz: true, dialogue_recording: true, asia_ready: true, module_10: true, lang_culture: true },
+      },
+    },
+    announcements: INITIAL_ANNOUNCEMENTS.map((a) => ({ ...a })),
+    activityLog: [
+      {
+        id: 'act_1',
+        studentName: 'Latasha Srinidthi Cliffton',
+        delta: 15,
+        quest: 'Approved: The Great Xiaolongbao Quest',
+        time: '10 mins ago',
+        timestamp: Date.now() - 600000,
+      },
+      {
+        id: 'act_2',
+        studentName: 'Ganesan Mohanapriya',
+        delta: 0,
+        quest: 'Submitted Claim: Maglev 300 km/h Speed Run (Pending Review)',
+        time: '25 mins ago',
+        timestamp: Date.now() - 1500000,
+      },
+      {
+        id: 'act_3',
+        studentName: 'Ren ZhuoJing',
+        delta: 20,
+        quest: 'Approved: Dialect Dynamo Street Test',
+        time: '1 hr ago',
+        timestamp: Date.now() - 3600000,
+      },
+      {
+        id: 'act_4',
+        studentName: 'Chua Yu Zhe',
+        delta: 15,
+        quest: 'Approved: Budget Group Receipt Audit',
+        time: '2 hrs ago',
+        timestamp: Date.now() - 7200000,
+      },
+    ],
+  };
+
+  saveDatabase(initialDb);
+  return initialDb;
+}
+
+// Atomic save helper
+function saveDatabase(data: DatabaseSchema): void {
+  try {
+    const dir = path.dirname(DB_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const tempFile = `${DB_FILE}.tmp`;
+    fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
+    fs.renameSync(tempFile, DB_FILE);
+  } catch (err) {
+    console.error('Failed to persist database to disk:', err);
+  }
+}
+
+// Live memory copy of database
+let db: DatabaseSchema = loadDatabase();
+
+// Live calculations: Squad Rankings
+function getLiveSquadRankings(students: Student[]) {
+  const squadMap: Record<
+    string,
+    { totalCoins: number; memberCount: number; color: string; squad: string }
+  > = {
+    'Team Dragon': { totalCoins: 0, memberCount: 0, color: 'from-amber-500 to-orange-500', squad: 'Team Dragon' },
+    'Team Xiaolongbao': { totalCoins: 0, memberCount: 0, color: 'from-rose-500 to-pink-500', squad: 'Team Xiaolongbao' },
+    'Team Maglev': { totalCoins: 0, memberCount: 0, color: 'from-blue-500 to-cyan-500', squad: 'Team Maglev' },
+  };
+
+  students.forEach((s) => {
+    if (!squadMap[s.squad]) {
+      squadMap[s.squad] = { totalCoins: 0, memberCount: 0, color: 'from-slate-500 to-slate-700', squad: s.squad };
+    }
+    squadMap[s.squad].totalCoins += s.coins;
+    squadMap[s.squad].memberCount += 1;
+  });
+
+  return Object.values(squadMap)
+    .map((sq) => ({
+      name: sq.squad,
+      squad: sq.squad,
+      totalCoins: sq.totalCoins,
+      memberCount: sq.memberCount,
+      avgCoins: sq.memberCount > 0 ? Math.round(sq.totalCoins / sq.memberCount) : 0,
+      color: sq.color,
+    }))
+    .sort((a, b) => b.avgCoins - a.avgCoins);
+}
+
+// Live Leaderboard calculation
+function getLiveLeaderboard(students: Student[]) {
+  return [...students].sort((a, b) => b.coins - a.coins);
+}
+
+// ==========================================
+// 2. ASK BAO CHATBOT (SINGLISH + HANYU PINYIN)
+// ==========================================
+
 const TRIP_CONTEXT = `
-You are Bao (小龙宝), the energetic, encouraging, and witty green dragon mascot and AI Trip Bot for "Quest Shanghai: Immersion App" (Overseas Immersion Programme - OIP 2026).
-Group Details:
+You are Bao (小龙宝 - Xiǎo Lóng Bǎo), the witty, friendly, and energetic green dragon mascot for "Quest Shanghai: Immersion App" (Ngee Ann Polytechnic Diploma in Engineering DE Group 2 Overseas Immersion Programme - OIP Shanghai 2026).
+
+YOUR PERSONALITY & TONE (CRITICAL INSTRUCTION):
+- Speak in warm, authentic Singaporean Singlish mixed with Mandarin Chinese characters and Han Yu Pinyin!
+- Use natural Singlish colloquialisms naturally: "lah", "leh", "lor", "shiok", "don't kancheong lah", "steady pom pi pi", "chope", "walao eh", "alamak", "sibei solid", "can one lah", "swee", "chiong"!
+- Whenever introducing Chinese terms, include the Han Yu Pinyin and characters! For example:
+  - "Nong hao (侬好 - Hello in Shanghainese)!"
+  - "Ni hao (你好 - Hello)!"
+  - "Duo shao qian (多少钱 - How much is this)?"
+  - "Xie xie nong (谢谢侬 - Thank you very much)!"
+  - "Chi bao le ma (吃饱了吗 - Have you eaten)?"
+  - "Tai gui le (太贵了 - Too expensive)!"
+  - "Pian yi yi dian (便宜一点 - A bit cheaper please)!"
+  - "Shengjianbao (生煎包 - Pan-fried pork buns)"
+  - "Xiaolongbao (小笼包 - Steamed soup dumplings)"
+  - "Taiji (太极 - Tai Chi)"
+  - "Shufa (书法 - Chinese calligraphy)"
+
+TRIP & PROGRAMME DETAILS:
 - Group: Shanghai Immersion (DE Group 2)
 - Dates: 8 to 14 November 2026 (7 Days)
-- Hotel Base: Homeinn Plus Hotel (Address: Yanchang Middle Road 302, Jing An District, Shanghai, China 200070 | 如家精选酒店 上海火车站延长路地铁站店, near Metro Line 1 Yanchang Road Station)
+- Hotel Base: Homeinn Plus Hotel (Address: Yanchang Middle Road 302, Jing'An District, Shanghai, China 200070 | 如家精选酒店 上海火车站延长路地铁站店, near Metro Line 1 Yanchang Road Station).
 - Student Leaders:
-  - Class Rep: Latasha (Handles overall roll call & faculty liaison)
-  - Assis: Ren ZhuoJing (Local logistics, directions & translation)
-  - Treasurer: Chua Yu Zhe (OIP module fund, meal group bills & receipts)
-- Gamification Rule: 100 Quest Coins = 5.0% Module Grade. Students earn coins through cultural quests, language missions, attending itinerary check-ins, and group challenges.
+  - Class Rep: Latasha (Roll-call, liaison)
+  - Assis: Ren ZhuoJing (Directions, translation, local logistics)
+  - Treasurer: Chua Yu Zhe (Group meals, receipts, module budget)
+- Gamification & Grading: 100 Quest Coins = 5.0% Module Grade! Students submit quest proofs (photos, TikTok, Instagram, LinkedIn links). Claims are reviewed and approved by student leaders in the Leader Desk.
+- Daily Phrase Challenge: Complete 3 phrases daily in the "🗣️ Phrases" tab for +5 Coins (strictly capped at 1 claim per day on server!).
 
-Key Itinerary Highlights:
-- Day 1 (Nov 8): Outbound flight China Eastern MU546 (SIN 10:10 -> PVG Terminal 1 15:35). Maglev train ride to Longyang Rd, transfer Line 2 & Line 1 to Homeinn Plus Hotel. Orientation dinner (Xiaolongbao & Shengjianbao).
-- Day 2 (Nov 9): High-Tech Innovation Hub & AI Robotics Park in Pudong, Lujiazui Skyline (Shanghai Tower observation deck).
-- Day 3 (Nov 10): University Academic Exchange & Lecture at Fudan University / Shanghai Jiao Tong, Campus Tour & Student Partner Meetup.
-- Day 4 (Nov 11): Heritage & Urban Renewal - Tianzifang, Former French Concession historical walk, Fuxing Park morning Tai Chi.
-- Day 5 (Nov 12): M50 Contemporary Art District creative immersion, Suzhou Creek walk, Evening Huangpu River Cruise (The Bund vs Pudong).
-- Day 6 (Nov 13): Yu Garden (Yuyuan), Old Shanghai Bazaar, cultural tea ceremony quest, Last-minute souvenirs & tea gifts (Nanjing Rd / AP Plaza), Final Group Presentations & Grand Farewell Banquet.
-- Day 7 (Nov 14): Hotel checkout, charter bus to PVG Terminal 1, return flight China Eastern MU565 to Singapore Changi (depart PVG 14:30, arrive SIN approx. 19:50).
+CONFIRMED VISITS (DAYS 2 TO 6 - NO Zhangjiang AI Park, NO Fudan/Guanghua Towers):
+1. Shanghai Urban Planning Exhibition Center (SUPEC - 上海城市规划展示馆): Shanghai 2035 master plan, 3D scale model, smart mobility, sustainable urban density.
+2. ebm-papst China Factory (依必安派特): Precision EC motor engineering, fan aerodynamics, cleanroom air systems, energy-efficient ventilation.
+3. Shanghai University (SHU - 上海大学): Baoshan Campus. Taiji (太极) masterclass, traditional Chinese Calligraphy (书法) workshop, local etiquette & cross-cultural student dialogue.
+4. Shanghai Jiao Tong University (SJTU - 上海交通大学) Building Lab: Next-gen refrigeration research test rigs, HVAC thermodynamics, green building energy simulations & smart facility management.
+5. Shanghai Disney Resort (上海迪士尼度假区): Theme park operations, ride safety interlocks & sensor redundancy (TRON & Pirates), crowd logistics & flow control, central energy utilities.
 
-7-Day November Shanghai Packing Strategy:
-- Weather: Late autumn, 10°C to 18°C. Crisp daytime, sharp morning/evening drops, damp chill.
-- Layering Strategy: 1 packable windproof/puffer jacket, 7-8 long-sleeve/collared shirts (smart-casual for site visits), 2 mid-layer sweaters/hoodies, 3-4 neat bottoms (no ripped jeans for corporate visits).
-- Footwear: 1 pair broken-in walking sneakers (15,000+ steps/day), 1 pair clean closed-toe shoes (mandatory for industrial/factory sites).
-- PT Gear: 15-20L backpack, field notebook & pens, verify PPE if required.
-- Tech & Pay: Alipay/WeChat Pay linked to international card (China is cashless), China eSIM/roaming, tested VPN, power bank (carry-on only, clear Wh rating), universal plug adapter.
-- Health: Compact umbrella, pocket tissues/hand sanitizer (many restrooms lack TP), lip balm/moisturizer, leave 25% empty luggage space for Shanghai shopping!
+LINKEDIN POST ASSIGNMENT (DELIVERABLES TAB - DEADLINE 7TH NOV 2026):
+- Choose 2 of the 5 confirmed visits above.
+- Write a story-driven reflection connecting engineering concepts with real-world observations.
+- Eye-catching headline, original media (photos/videos), tag host organisations.
+- Required hashtags: #NgeeAnnPolytechnic #NPGlobal #FacilitiesManagement #BuiltEnvironment #ShanghaiImmersion #SmartCities #TVET
 
-Academic Deliverables (1 LU PLP-Global Readiness & NYC AEP Grant):
-- Brightspace Module: Homepage - DE_OIP (Shanghai)_NOV26
-- To qualify for 1 LU under PLP-Global Readiness and NYC AEP grant, students must complete:
-  1. Pre-trip Activities: Safety Briefing Quiz, OIP Dialogue Session Recording (China).
-  2. NYC's AEP Online Module (https://learn.nyc.gov.sg): "[AEP] Language, Culture & Current Affairs [by Country]" comprising: Are you Asia Ready, Current Affairs Module 10, and Language and Culture in country.
-  3. Reflection & Post-trip Survey: Trip Reflection (min. 80 words, uploaded to Reflection Question in NP Brightspace), and Post-trip Survey via unique link sent to NP email & personal email on the second last day of the trip (Nov 13).
-
-Your Persona:
-- Warm, cheerful, bilingual flair (knows practical Mandarin & Shanghainese like "Nong Hao" 侬好, "Xie Xie" 谢谢, "Mibaobu" 没搞头).
-- Helpful with metro tips (Line 1 to People's Square, transfer to Line 2), food recommendations near Yanchang Road / Jing'an, emergency advice (contact Latasha or Ren ZhuoJing immediately), and tips to conquer quests and get the full 5% grade.
-- Keep responses friendly, concise, and formatted nicely with emojis.
+Format your replies cleanly with emojis, bullet points when appropriate, and keep the dragon vibe vibrant, helpful, and Singaporean-smart!
 `;
 
 // API route for Bao chat
@@ -73,121 +317,621 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { message, history } = req.body;
     if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+      return res.status(400).json({ error: 'Message is required lah!' });
     }
 
     if (!process.env.GEMINI_API_KEY) {
       // Intelligent fallback when API key is not yet set in environment
       return res.json({
-        reply: `🐲 Bao says: "Nong Hao (侬好)! Welcome to Quest Shanghai OIP 2026! Remember: 100 Coins = 5% Module Grade! Latasha, Ren ZhuoJing, and Chua Yu Zhe are at the Leader Desk. For emergencies or roll-call, check the Leader Desk. Need food tips near Homeinn Plus Hotel? Try the restaurants along Yanchang Middle Road!"`,
+        reply: `🐲 Bao says: "Walao eh! Ni hao (你好)! Welcome to Quest Shanghai OIP 2026! Don't kancheong lah! Remember ah: 100 Coins = 5.0% Module Grade! Latasha, Ren ZhuoJing, and Chua Yu Zhe are watching the Leader Desk. Need help with Metro Line 1 near Homeinn Plus Hotel or craving hot Shengjianbao (生煎包)? Just ask me lor, steady steady!"`,
         isFallback: true,
       });
     }
-
-    const contents = [
-      {
-        role: 'user',
-        parts: [{ text: `${TRIP_CONTEXT}\n\nStudent asks: ${message}` }],
-      },
-    ];
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.8-flash',
       contents: `${TRIP_CONTEXT}\n\nChat history:\n${(history || [])
         .map((h: { sender: string; text: string }) => `${h.sender}: ${h.text}`)
-        .join('\n')}\n\nStudent: ${message}\nBao (in character):`,
+        .join('\n')}\n\nStudent: ${message}\nBao (in character with Singlish and Chinese Hanyu Pinyin):`,
     });
 
-    return res.json({ reply: response.text || "Bao is here! Let me know what you need for Quest Shanghai!" });
+    return res.json({
+      reply:
+        response.text ||
+        "🐲 Bao says: Steady lah! Bao is always here for DE Group 2! What do you need help with, brother?",
+    });
   } catch (err: any) {
-    console.warn('Gemini API call notice:', err?.message || err);
-    // Helpful in-character fallback for student trip immersion
+    console.warn('Gemini API notice:', err?.message || err);
     const msg = (req.body?.message || '').toLowerCase();
-    let smartTip = "🐲 Bao says: Don't worry! Remember for DE Group 2, Homeinn Plus Hotel is at Yanchang Middle Road 302, Jing'An District (near Metro Line 1 Yanchang Road Station). Latasha and Ren ZhuoJing have live roll-call at the Leader Desk. Keep earning those coins towards your 5.0% grade!";
-    
+    let smartTip =
+      "🐲 Bao says: Aiyoh, don't kancheong lah! Remember for DE Group 2, Homeinn Plus Hotel is at Yanchang Middle Road 302 (延长中路302号), right near Metro Line 1 Yanchang Road Station. Keep collecting coins for your 5.0% grade, steady pom pi pi!";
+
     if (msg.includes('bund') || msg.includes('line 2') || msg.includes('metro') || msg.includes('how do i get')) {
-      smartTip = "🐲 Bao says: To get to The Bund from Homeinn Plus Hotel: Walk to Yanchang Road Station (Line 1), take Line 1 Southbound to People's Square (人民广场), then transfer to Line 2 for 1 stop to East Nanjing Road (南京东路). Walk 5 mins east straight down the pedestrian promenade to reach The Bund!";
+      smartTip =
+        "🐲 Bao says: Go The Bund is it? Sibei easy one lah! From Homeinn Plus Hotel, walk to Yanchang Road Station (延长路站 - Line 1), take Southbound train to People's Square (人民广场 - Rénmín Guǎngchǎng). Transfer to Line 2 for just 1 stop to East Nanjing Road (南京东路 - Nánjīng Dōng Lù)! Walk 5 mins east along the promenade and boom — The Bund (外滩 - Wàitān)! At night the skyline is sibei shiok!";
     } else if (msg.includes('food') || msg.includes('dumpling') || msg.includes('xiaolongbao') || msg.includes('eat')) {
-      smartTip = "🐲 Bao says: Craving dumplings? Right near Homeinn Plus Hotel on Yanchang Middle Road, try local eateries or head towards Daning International Commercial Plaza for Shengjianbao and soup dumplings!";
-    } else if (msg.includes('phrase') || msg.includes('slang') || msg.includes('language') || msg.includes('chinese')) {
-      smartTip = "🐲 Bao says: Try these 3 Shanghainese survival phrases: 1) 'Nong Hao' (侬好 - Hello), 2) 'Xie Xie Nong' (谢谢侬 - Thank you), 3) 'Jie Gun' (结棍 - Awesome!), or ask 'Duo Shao Tie' (多少钿 - How much?)! Switch to the '🗣️ Phrases' tab in the top navigation to listen to native audio and complete the Daily Challenge for +5 Coins!";
-    } else if (msg.includes('emergency') || msg.includes('contact') || msg.includes('call') || msg.includes('lost')) {
-      smartTip = "🐲 Bao says: If you are separated: 1) Contact Class Rep Latasha or Assis Ren ZhuoJing, 2) Show any taxi driver our Chinese Taxi Address Card in the header (Homeinn Plus Hotel, Yanchang Middle Road 302 / 中国上海市静安区延长中路302号)!";
-    } else if (msg.includes('coin') || msg.includes('grade') || msg.includes('quest')) {
-      smartTip = "🐲 Bao says: You need 100 Quest Coins for the full 5.0% Module Grade! Head over to the 'Loot & Badges' tab to claim coins for eating Xiaolongbao, riding the Maglev, or exploring Tianzifang!";
-    } else if (msg.includes('pack') || msg.includes('wear') || msg.includes('clothes') || msg.includes('luggage') || msg.includes('jacket')) {
-      smartTip = "🐲 Bao says: For Shanghai in November (10°C–18°C): 1) Layer up with a packable puffer jacket and smart-casual collared shirts for company visits, 2) Wear broken-in walking sneakers (15,000+ steps!) + clean closed-toe shoes for factory sites, 3) Bring a 15–20L daypack & notebook, 4) Pre-link Alipay/WeChat Pay & test your VPN, 5) Carry pocket tissues and lip balm, and leave 25% suitcase room for souvenirs! Click the 'Packing List' button in the header to view the full interactive checklist!";
-    } else if (msg.includes('deliverable') || msg.includes('brightspace') || msg.includes('nyc') || msg.includes('grant') || msg.includes('1 lu') || msg.includes('reflection') || msg.includes('survey')) {
-      smartTip = "🐲 Bao says: Don't forget your Academic Deliverables for 1 LU (PLP-Global Readiness & NYC AEP Grant)! Under Brightspace module 'Homepage - DE_OIP (Shanghai)_NOV26': 1) Complete Pre-trip Safety Quiz & Dialogue Recording, 2) Complete NYC AEP Online Modules at learn.nyc.gov.sg, 3) Upload your min. 80-word trip reflection to Brightspace and finish the post-trip survey (unique link sent to your NP & personal email on Nov 13)! Click the 'Deliverables' button in the top bar to track your tasks!";
+      smartTip =
+        "🐲 Bao says: Wah hungry already ah? Chi bao le ma (吃饱了吗)? Near our hotel along Yanchang Middle Road, go try crispy Shengjianbao (生煎包 - Shēngjiānbāo) with hot soup inside! Or go Daning Plaza for authentic Xiaolongbao (小笼包 - Xiǎolóngbāo). Remember dip black vinegar and ginger, and say 'Xie xie nong (谢谢侬)' to the aunty lah!";
+    } else if (msg.includes('visit') || msg.includes('programme') || msg.includes('itinerary') || msg.includes('disney') || msg.includes('shu') || msg.includes('sjtu') || msg.includes('ebm')) {
+      smartTip =
+        "🐲 Bao says: Steady! Our 5 confirmed technical & cultural visits are: 1) Shanghai Urban Planning Exhibition Center (SUPEC - 上海2035规划), 2) ebm-papst precision fan & EC motor factory, 3) Shanghai University (SHU - 太极 Taiji & 书法 Calligraphy), 4) SJTU Building Lab (refrigeration & green energy), and 5) Shanghai Disney Resort (ride safety & crowd logistics)! Don't forget your LinkedIn Post assignment on 2 of these visits by 7th Nov!";
+    } else if (msg.includes('linkedin') || msg.includes('deliverable') || msg.includes('hashtag')) {
+      smartTip =
+        "🐲 Bao says: LinkedIn Post assignment deadline is 7th Nov 2026 ah! Pick 2 out of the 5 visits, snap original photos, write your story-driven reflection, tag host organisations, and paste required hashtags: #NgeeAnnPolytechnic #NPGlobal #FacilitiesManagement #BuiltEnvironment #ShanghaiImmersion #SmartCities #TVET! Then paste your URL in the Deliverables tab to mark it done!";
+    } else if (msg.includes('phrase') || msg.includes('slang') || msg.includes('chinese') || msg.includes('language')) {
+      smartTip =
+        "🐲 Bao says: Jiejie and brother, try these phrases lah: 1) 'Nong Hao' (侬好 - Shanghainese for Hello), 2) 'Duo Shao Qian' (多少钱 - How much?), 3) 'Tai Gui Le, Pian Yi Yi Dian' (太贵了，便宜一点 - Too expensive, cheaper please!), 4) 'Jie Gun' (结棍 - Shanghainese for Awesome!). Complete the daily quiz in the '🗣️ Phrases' tab to chope +5 Coins every day!";
     }
 
     return res.json({ reply: smartTip, isFallback: true });
   }
 });
 
-// Authentication verification endpoint (Passwordless login)
-const LEADER_IDS = ['s1', 's11', 's22'];
+// ==========================================
+// 3. BACKEND API ROUTES FOR REAL SHARED DB
+// ==========================================
 
-app.post('/api/auth/verify', (req, res) => {
-  const { studentId } = req.body;
-  if (!studentId) {
-    return res.status(400).json({ error: 'Student ID is required' });
-  }
+// Bootstrap initial live state
+app.get('/api/bootstrap', (_req, res) => {
+  const liveSquads = getLiveSquadRankings(db.students);
+  const liveLeaderboard = getLiveLeaderboard(db.students);
 
-  const isLeaderId = LEADER_IDS.includes(studentId);
-  return res.json({
-    success: true,
-    role: isLeaderId ? 'leader' : 'student',
-    leaderPin: isLeaderId ? 'leader' : undefined,
+  res.json({
+    students: db.students,
+    squadRankings: liveSquads,
+    leaderboard: liveLeaderboard,
+    quests: db.quests,
+    claims: db.claims,
+    announcements: db.announcements,
+    activityLog: db.activityLog.slice(0, 15),
+    deliverables: db.deliverables,
+    surveysCount: db.surveys.length,
   });
 });
 
-// Middleware for authorization (passcode requirement removed per request)
-function requireLeaderAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
-  // Seamless authorization without password blocking
-  next();
-}
+// Live rankings endpoint
+app.get('/api/rankings', (_req, res) => {
+  const liveSquads = getLiveSquadRankings(db.students);
+  const liveLeaderboard = getLiveLeaderboard(db.students);
+  res.json({
+    squadRankings: liveSquads,
+    leaderboard: liveLeaderboard,
+    totalStudents: db.students.length,
+  });
+});
 
-// Protected Coin Modification Endpoints
-app.post('/api/coins/modify', requireLeaderAuth, (req, res) => {
+// Quest "Upload Proof & Claim" -> creates a PENDING claim (coins NOT awarded yet!)
+app.post('/api/quests/claim', (req, res) => {
+  const { studentId, questId, proofPhotoUrl, proofLink, proofNote } = req.body;
+  if (!studentId || !questId) {
+    return res.status(400).json({ error: 'studentId and questId are required' });
+  }
+
+  const student = db.students.find((s) => s.id === studentId);
+  const quest = db.quests.find((q) => q.id === questId);
+
+  if (!student || !quest) {
+    return res.status(404).json({ error: 'Student or quest not found' });
+  }
+
+  // Check if an existing pending claim is already present
+  const existingPending = db.claims.find(
+    (c) => c.studentId === studentId && c.questId === questId && c.status === 'pending'
+  );
+  if (existingPending) {
+    return res.status(400).json({
+      error: 'You already have a pending claim for this quest under leader review!',
+      claim: existingPending,
+    });
+  }
+
+  const newClaim: QuestClaim = {
+    id: `claim_${Date.now()}_${studentId}`,
+    studentId,
+    studentName: student.name,
+    questId,
+    questTitle: quest.title,
+    coins: quest.coins,
+    badgeName: quest.badgeName,
+    badgeLevel: quest.badgeLevel,
+    icon: quest.icon,
+    status: 'pending',
+    proofPhotoUrl: proofPhotoUrl || undefined,
+    proofLink: proofLink || undefined,
+    proofNote: proofNote || undefined,
+    submittedAt: new Date().toLocaleString('en-SG', {
+      timeZone: 'Asia/Singapore',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+  };
+
+  db.claims.unshift(newClaim);
+
+  // Log activity
+  db.activityLog.unshift({
+    id: `act_${Date.now()}`,
+    studentName: student.name,
+    delta: 0,
+    quest: `Submitted proof for "${quest.title}" (Pending Leader Approval)`,
+    time: 'Just now',
+    timestamp: Date.now(),
+  });
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    status: 'pending',
+    claim: newClaim,
+    message: `Proof submitted! Your claim for "${quest.title}" is now PENDING review in the Leader Desk. Coins will be credited once approved by a student leader.`,
+  });
+});
+
+// Leader reviews pending quest claim -> approves (+coins) or rejects
+app.post('/api/quests/review', (req, res) => {
+  const { claimId, action, reviewedBy } = req.body;
+  if (!claimId || !action || !['approve', 'reject'].includes(action)) {
+    return res.status(400).json({ error: 'claimId and valid action (approve/reject) are required' });
+  }
+
+  const claimIndex = db.claims.findIndex((c) => c.id === claimId);
+  if (claimIndex === -1) {
+    return res.status(404).json({ error: 'Claim not found' });
+  }
+
+  const claim = db.claims[claimIndex];
+  const reviewerName = reviewedBy || 'Student Leader';
+
+  if (action === 'approve') {
+    claim.status = 'approved';
+    claim.reviewedAt = new Date().toLocaleString('en-SG', {
+      timeZone: 'Asia/Singapore',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    claim.reviewedBy = reviewerName;
+
+    // Credit coins to student in live database
+    const student = db.students.find((s) => s.id === claim.studentId);
+    if (student) {
+      const prevCoins = student.coins;
+      const newCoins = Math.min(100, Math.max(0, prevCoins + claim.coins));
+      student.coins = newCoins;
+      student.questsCompleted += 1;
+
+      const newGrade = parseFloat(((newCoins / 100) * 5.0).toFixed(2));
+      const history = student.coinHistory || [];
+      if (history.length > 0) {
+        history[history.length - 1] = {
+          ...history[history.length - 1],
+          coins: newCoins,
+          cumulativeGrade: newGrade,
+        };
+      }
+
+      // Log activity
+      db.activityLog.unshift({
+        id: `act_${Date.now()}`,
+        studentName: student.name,
+        delta: claim.coins,
+        quest: `Approved by ${reviewerName}: "${claim.questTitle}" (+${claim.coins}c)`,
+        time: 'Just now',
+        timestamp: Date.now(),
+      });
+    }
+  } else {
+    claim.status = 'rejected';
+    claim.reviewedAt = new Date().toLocaleString('en-SG', {
+      timeZone: 'Asia/Singapore',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    claim.reviewedBy = reviewerName;
+
+    db.activityLog.unshift({
+      id: `act_${Date.now()}`,
+      studentName: claim.studentName,
+      delta: 0,
+      quest: `Claim for "${claim.questTitle}" declined by ${reviewerName}`,
+      time: 'Just now',
+      timestamp: Date.now(),
+    });
+  }
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    action,
+    claim,
+    students: db.students,
+    squadRankings: getLiveSquadRankings(db.students),
+    leaderboard: getLiveLeaderboard(db.students),
+    claims: db.claims,
+    activityLog: db.activityLog.slice(0, 15),
+  });
+});
+
+// Daily phrase mission coins: capped at once per day per student on server
+app.post('/api/phrase-challenge/complete', (req, res) => {
+  const { studentId } = req.body;
+  if (!studentId) {
+    return res.status(400).json({ error: 'studentId is required' });
+  }
+
+  const student = db.students.find((s) => s.id === studentId);
+  if (!student) {
+    return res.status(404).json({ error: 'Student not found' });
+  }
+
+  // Get current date string in Asia/Singapore timezone (YYYY-MM-DD)
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Singapore' });
+
+  const record = db.phraseCompletions[studentId];
+  if (record && record.lastCompletedDate === today) {
+    return res.status(429).json({
+      success: false,
+      alreadyCompletedToday: true,
+      message:
+        "Alamak! You have already earned your +5 Coins for today's Daily Phrase Challenge lah! The server caps it at 1 claim per day. Come back tomorrow for fresh phrases!",
+      lastCompletedDate: record.lastCompletedDate,
+    });
+  }
+
+  // Award +5 coins
+  const delta = 5;
+  const newCoins = Math.min(100, student.coins + delta);
+  student.coins = newCoins;
+  const newGrade = parseFloat(((newCoins / 100) * 5.0).toFixed(2));
+  if (student.coinHistory && student.coinHistory.length > 0) {
+    student.coinHistory[student.coinHistory.length - 1] = {
+      ...student.coinHistory[student.coinHistory.length - 1],
+      coins: newCoins,
+      cumulativeGrade: newGrade,
+    };
+  }
+
+  // Update completion record
+  db.phraseCompletions[studentId] = {
+    lastCompletedDate: today,
+    totalClaims: (record?.totalClaims || 0) + 1,
+  };
+
+  db.activityLog.unshift({
+    id: `act_${Date.now()}`,
+    studentName: student.name,
+    delta: 5,
+    quest: 'Completed Daily Shanghai Phrase Challenge (+5 Coins)',
+    time: 'Just now',
+    timestamp: Date.now(),
+  });
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    coinsEarned: delta,
+    newTotalCoins: newCoins,
+    lastCompletedDate: today,
+    message: 'Shiok! You earned +5 Quest Coins for mastering 3 Mandarin phrases today!',
+    students: db.students,
+    squadRankings: getLiveSquadRankings(db.students),
+    leaderboard: getLiveLeaderboard(db.students),
+  });
+});
+
+// Coin adjustment (Single student)
+app.post('/api/coins/modify', (req, res) => {
   const { studentId, delta, reason } = req.body;
   if (!studentId || typeof delta !== 'number') {
     return res.status(400).json({ error: 'studentId and numeric delta are required' });
   }
-  return res.json({ success: true, studentId, delta, reason: reason || 'Leader Adjustment' });
+
+  const student = db.students.find((s) => s.id === studentId);
+  if (!student) {
+    return res.status(404).json({ error: 'Student not found' });
+  }
+
+  const newCoins = Math.max(0, Math.min(100, student.coins + delta));
+  student.coins = newCoins;
+  if (delta > 0) student.questsCompleted += 1;
+
+  const newGrade = parseFloat(((newCoins / 100) * 5.0).toFixed(2));
+  if (student.coinHistory && student.coinHistory.length > 0) {
+    student.coinHistory[student.coinHistory.length - 1] = {
+      ...student.coinHistory[student.coinHistory.length - 1],
+      coins: newCoins,
+      cumulativeGrade: newGrade,
+    };
+  }
+
+  db.activityLog.unshift({
+    id: `act_${Date.now()}`,
+    studentName: student.name,
+    delta,
+    quest: reason || 'Leader Adjustment',
+    time: 'Just now',
+    timestamp: Date.now(),
+  });
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    student,
+    students: db.students,
+    squadRankings: getLiveSquadRankings(db.students),
+    leaderboard: getLiveLeaderboard(db.students),
+    activityLog: db.activityLog.slice(0, 15),
+  });
 });
 
-app.post('/api/coins/batch-modify', requireLeaderAuth, (req, res) => {
+// Batch coin adjustment (All or Squad)
+app.post('/api/coins/batch-modify', (req, res) => {
   const { targetScope, delta, reason } = req.body;
   if (!targetScope || typeof delta !== 'number') {
     return res.status(400).json({ error: 'targetScope and numeric delta are required' });
   }
-  return res.json({ success: true, targetScope, delta, reason: reason || 'Batch Adjustment' });
+
+  db.students = db.students.map((s) => {
+    let match = false;
+    if (targetScope === 'all') match = true;
+    else if (targetScope === s.squad || targetScope === s.id) match = true;
+
+    if (match) {
+      const newCoins = Math.max(0, Math.min(100, s.coins + delta));
+      const newGrade = parseFloat(((newCoins / 100) * 5.0).toFixed(2));
+      const history = [...(s.coinHistory || [])];
+      if (history.length > 0) {
+        history[history.length - 1] = {
+          ...history[history.length - 1],
+          coins: newCoins,
+          cumulativeGrade: newGrade,
+        };
+      }
+      return {
+        ...s,
+        coins: newCoins,
+        questsCompleted: delta > 0 ? s.questsCompleted + 1 : s.questsCompleted,
+        coinHistory: history,
+      };
+    }
+    return s;
+  });
+
+  const scopeLabel =
+    targetScope === 'all'
+      ? 'All 29 Students'
+      : targetScope.startsWith('Team')
+      ? targetScope
+      : 'Selected Cohort';
+
+  db.activityLog.unshift({
+    id: `act_${Date.now()}`,
+    studentName: scopeLabel,
+    delta,
+    quest: reason || 'Batch Leader Adjustment',
+    time: 'Just now',
+    timestamp: Date.now(),
+  });
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    students: db.students,
+    squadRankings: getLiveSquadRankings(db.students),
+    leaderboard: getLiveLeaderboard(db.students),
+    activityLog: db.activityLog.slice(0, 15),
+  });
 });
 
-app.post('/api/coins/reset', requireLeaderAuth, (_req, res) => {
-  return res.json({ success: true, message: 'All student coins have been reset to 0 by authorized leader.' });
+// Reset all student coins to 0
+app.post('/api/coins/reset', (_req, res) => {
+  db.students = db.students.map((s) => ({
+    ...s,
+    coins: 0,
+    questsCompleted: 0,
+    coinHistory: (s.coinHistory || []).map((h) => ({
+      ...h,
+      coins: 0,
+      cumulativeGrade: 0,
+    })),
+  }));
+
+  db.activityLog.unshift({
+    id: `act_${Date.now()}`,
+    studentName: 'All 29 Students',
+    delta: 0,
+    quest: 'Cohort Coins Reset by Leader',
+    time: 'Just now',
+    timestamp: Date.now(),
+  });
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    message: 'All student coins have been reset to 0 in shared backend database.',
+    students: db.students,
+    squadRankings: getLiveSquadRankings(db.students),
+    leaderboard: getLiveLeaderboard(db.students),
+  });
 });
 
-// Protected Attendance Endpoint
-app.post('/api/attendance/update', requireLeaderAuth, (req, res) => {
+// Update student attendance
+app.post('/api/attendance/update', (req, res) => {
   const { studentId, status } = req.body;
-  if (!studentId || !status) {
-    return res.status(400).json({ error: 'studentId and status are required' });
+  if (!studentId || !status || !['present', 'late', 'excused'].includes(status)) {
+    return res.status(400).json({ error: 'studentId and valid status required' });
   }
-  return res.json({ success: true, studentId, status });
+
+  const student = db.students.find((s) => s.id === studentId);
+  if (!student) {
+    return res.status(404).json({ error: 'Student not found' });
+  }
+
+  student.attendanceStatus = status;
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    studentId,
+    status,
+    students: db.students,
+  });
 });
 
-// Protected Room Modification Endpoint
-app.post('/api/rooms/update', requireLeaderAuth, (req, res) => {
-  const { studentId, roomNumber } = req.body;
-  if (!studentId || !roomNumber) {
-    return res.status(400).json({ error: 'studentId and roomNumber are required' });
+// Submit Research Survey Response
+app.post('/api/surveys/submit', (req, res) => {
+  const { studentId, answers, qualitativeComments, suggestions } = req.body;
+  if (!studentId || !answers) {
+    return res.status(400).json({ error: 'studentId and survey answers are required' });
   }
-  return res.json({ success: true, studentId, roomNumber });
+
+  const student = db.students.find((s) => s.id === studentId);
+  const studentName = student ? student.name : 'Unknown Student';
+
+  const record: SurveyRecord = {
+    id: `survey_${Date.now()}_${studentId}`,
+    studentId,
+    studentName,
+    submittedAt: new Date().toISOString(),
+    answers,
+    qualitativeComments: qualitativeComments || '',
+    suggestions: suggestions || '',
+  };
+
+  // Replace existing or push new
+  const existingIdx = db.surveys.findIndex((s) => s.studentId === studentId);
+  if (existingIdx >= 0) {
+    db.surveys[existingIdx] = record;
+  } else {
+    db.surveys.push(record);
+  }
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    message: 'Survey response saved to shared database!',
+    totalResponses: db.surveys.length,
+  });
 });
 
-// Start server and mount Vite middleware
+// Export Survey Responses as CSV
+app.get('/api/surveys/export', (_req, res) => {
+  const headers = [
+    'Timestamp',
+    'Student ID',
+    'Student Name',
+    'Squad',
+    'Q1 (Loss Aversion 50 Coins)',
+    'Q2 (5% Grade Weight)',
+    'Q3 (Punctuality)',
+    'Q4 (Curiosity)',
+    'Q5 (Peer Fairness Latasha/ZhuoJing/YuZhe)',
+    'Q6 (Audit Log Transparency)',
+    'Q7 (Bao AI Concept Utility)',
+    'Q8 (Bao Schedule Utility)',
+    'Q9 (Global Readiness)',
+    'Q10 (Disneyland/SJTU Visits)',
+    'Comments',
+    'Suggestions',
+  ];
+
+  const rows = db.surveys.map((sv) => {
+    const student = db.students.find((s) => s.id === sv.studentId);
+    const squad = student?.squad || '';
+    return [
+      `"${sv.submittedAt}"`,
+      `"${sv.studentId}"`,
+      `"${sv.studentName.replace(/"/g, '""')}"`,
+      `"${squad}"`,
+      sv.answers['q1'] || '',
+      sv.answers['q2'] || '',
+      sv.answers['q3'] || '',
+      sv.answers['q4'] || '',
+      sv.answers['q5'] || '',
+      sv.answers['q6'] || '',
+      sv.answers['q7'] || '',
+      sv.answers['q8'] || '',
+      sv.answers['q9'] || '',
+      sv.answers['q10'] || '',
+      `"${(sv.qualitativeComments || '').replace(/"/g, '""')}"`,
+      `"${(sv.suggestions || '').replace(/"/g, '""')}"`,
+    ];
+  });
+
+  const csv = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename="Shanghai_Immersion_Survey_Responses_${new Date().toISOString().slice(0, 10)}.csv"`
+  );
+  return res.send(csv);
+});
+
+// Submit LinkedIn Post Deliverable
+app.post('/api/deliverables/linkedin', (req, res) => {
+  const { studentId, linkedInPostUrl, selectedVisits, reflectionText, isCompleted } = req.body;
+  if (!studentId) {
+    return res.status(400).json({ error: 'studentId is required' });
+  }
+
+  const existing = db.deliverables[studentId] || { studentId };
+  db.deliverables[studentId] = {
+    ...existing,
+    studentId,
+    linkedInPostUrl: linkedInPostUrl || existing.linkedInPostUrl,
+    selectedVisits: selectedVisits || existing.selectedVisits || [],
+    reflectionText: reflectionText || existing.reflectionText || '',
+    isCompleted: isCompleted !== undefined ? isCompleted : true,
+    submittedAt: new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }),
+  };
+
+  saveDatabase(db);
+
+  return res.json({
+    success: true,
+    message: 'LinkedIn Post Deliverable saved to shared database!',
+    deliverable: db.deliverables[studentId],
+  });
+});
+
+// Get Deliverables for student
+app.get('/api/deliverables/:studentId', (req, res) => {
+  const { studentId } = req.params;
+  const deliverable = db.deliverables[studentId] || {
+    studentId,
+    linkedInPostUrl: '',
+    selectedVisits: [],
+    reflectionText: '',
+    isCompleted: false,
+  };
+  return res.json({ deliverable });
+});
+
+// Reset database back to seed values
+app.post('/api/database/reset', (_req, res) => {
+  if (fs.existsSync(DB_FILE)) {
+    fs.unlinkSync(DB_FILE);
+  }
+  db = loadDatabase();
+  return res.json({ success: true, message: 'Database reset to initial clean seed.' });
+});
+
+// ==========================================
+// 4. DEV & PRODUCTION SERVER SETUP
+// ==========================================
+
 async function start() {
   const isProd = process.env.NODE_ENV === 'production';
 
@@ -205,7 +949,7 @@ async function start() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Quest Shanghai App running on http://0.0.0.0:${PORT}`);
+    console.log(`Quest Shanghai Immersion Full-Stack Server running on http://0.0.0.0:${PORT}`);
   });
 }
 

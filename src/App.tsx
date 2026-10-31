@@ -7,12 +7,13 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { TripBanner } from './components/TripBanner';
 import { RankingsView } from './components/RankingsView';
-import { LeaderDeskView } from './components/LeaderDeskView';
+import { LeaderDeskView, QuestClaim } from './components/LeaderDeskView';
 import { LootBadgesView } from './components/LootBadgesView';
 import { ItineraryView } from './components/ItineraryView';
 import { AskBaoBot } from './components/AskBaoBot';
 import { PackingListModal } from './components/PackingListModal';
 import { DeliverablesModal } from './components/DeliverablesModal';
+import { DeliverablesView } from './components/DeliverablesView';
 import { SurveyView } from './components/SurveyView';
 import { PhrasebookView } from './components/PhrasebookView';
 import { SignInScreen } from './components/SignInScreen';
@@ -48,7 +49,7 @@ export default function App() {
     return null;
   });
 
-  const [activeTab, setActiveTab] = useState<'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey'>('rankings');
+  const [activeTab, setActiveTab] = useState<'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey' | 'deliverables'>('rankings');
   const [quests, setQuests] = useState<Quest[]>(() => {
     try {
       const saved = localStorage.getItem('quest_shanghai_quests_v4');
@@ -79,14 +80,50 @@ export default function App() {
   const [announcements, setAnnouncements] = useState<Announcement[]>(INITIAL_ANNOUNCEMENTS);
   const [showPackingModal, setShowPackingModal] = useState<boolean>(false);
   const [showDeliverablesModal, setShowDeliverablesModal] = useState<boolean>(false);
+  const [claims, setClaims] = useState<QuestClaim[]>([]);
 
   // Activity Feed built from verified real students and real coin changes
   const [recentLog, setRecentLog] = useState<{ studentName: string; delta: number; quest: string; time: string }[]>([
-    { studentName: 'Latasha Srinidthi Cliffton', delta: 15, quest: 'Xiaolongbao Local Order Challenge', time: '10 mins ago' },
-    { studentName: 'Ren ZhuoJing', delta: 20, quest: 'Maglev 300 km/h Speed Run', time: '35 mins ago' },
-    { studentName: 'Chua Yu Zhe', delta: 15, quest: 'Budget Group Receipt Audit', time: '1 hr ago' },
-    { studentName: 'Tan Zheng Kang, Aaron', delta: 10, quest: 'Pudong Architecture Selfie', time: '2 hrs ago' },
+    { studentName: 'Latasha Srinidthi Cliffton', delta: 15, quest: 'Approved: The Great Xiaolongbao Quest', time: '10 mins ago' },
+    { studentName: 'Ganesan Mohanapriya', delta: 0, quest: 'Submitted Claim: Maglev 300 km/h Speed Run (Pending Review)', time: '25 mins ago' },
+    { studentName: 'Ren ZhuoJing', delta: 20, quest: 'Approved: Dialect Dynamo Street Test', time: '1 hr ago' },
+    { studentName: 'Chua Yu Zhe', delta: 15, quest: 'Approved: Budget Group Receipt Audit', time: '2 hrs ago' },
   ]);
+
+  // Live shared database sync
+  const refreshBootstrap = async () => {
+    try {
+      const res = await fetch('/api/bootstrap');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.students && Array.isArray(data.students)) {
+          setStudents(data.students);
+        }
+        if (data.claims && Array.isArray(data.claims)) {
+          setClaims(data.claims);
+        }
+        if (data.announcements && Array.isArray(data.announcements)) {
+          setAnnouncements(data.announcements);
+        }
+        if (data.activityLog && Array.isArray(data.activityLog)) {
+          setRecentLog(
+            data.activityLog.map((a: any) => ({
+              studentName: a.studentName,
+              delta: a.delta,
+              quest: a.quest,
+              time: a.time,
+            }))
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Bootstrap fetch notice (using current state):', err);
+    }
+  };
+
+  useEffect(() => {
+    refreshBootstrap();
+  }, []);
 
   const currentStudentId = auth?.studentId || 's1';
   const currentStudent = students.find((s) => s.id === currentStudentId) || students[0];
@@ -320,54 +357,85 @@ export default function App() {
     ]);
   };
 
-  // Claim quest from Loot tab with optional photo/link/note proof
-  const handleClaimQuest = (
+  // Claim quest from Loot tab: creates a PENDING claim via /api/quests/claim
+  const handleClaimQuest = async (
     questId: string,
     proofData?: { photoUrl?: string; link?: string; note?: string }
   ) => {
     const quest = quests.find((q) => q.id === questId);
     if (!quest) return;
 
-    setQuests((prev) =>
-      prev.map((q) =>
-        q.id === questId
-          ? {
-              ...q,
-              status: 'completed' as const,
-              proofPhotoUrl: proofData?.photoUrl || q.proofPhotoUrl,
-              proofLink: proofData?.link || q.proofLink,
-              proofNote: proofData?.note || q.proofNote,
-              submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            }
-          : q
-      )
-    );
+    try {
+      const res = await fetch('/api/quests/claim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentId: currentStudent.id,
+          questId,
+          proofPhotoUrl: proofData?.photoUrl,
+          proofLink: proofData?.link,
+          proofNote: proofData?.note,
+        }),
+      });
 
-    // Apply quest reward
-    setStudents((prev) =>
-      prev.map((s) => {
-        if (s.id === currentStudent.id) {
-          const newCoins = Math.max(0, Math.min(100, s.coins + quest.coins));
-          const newGrade = parseFloat(((newCoins / 100) * 5.0).toFixed(2));
-          return {
-            ...s,
-            coins: newCoins,
-            questsCompleted: s.questsCompleted + 1,
-          };
+      if (res.ok) {
+        const data = await res.json();
+        if (data.claim) {
+          setClaims((prev) => [data.claim, ...prev.filter((c) => c.id !== data.claim.id)]);
         }
-        return s;
-      })
-    );
+      }
+    } catch (err) {
+      console.warn('Network exception while submitting quest claim:', err);
+    }
 
+    // Update activity feed with pending state (coins NOT awarded yet!)
     setRecentLog((prev) => [
       {
         studentName: currentStudent.name,
-        delta: quest.coins,
-        quest: quest.title,
+        delta: 0,
+        quest: `Submitted Proof: ${quest.title} (Pending Leader Review)`,
         time: 'Just now',
       },
       ...prev.slice(0, 8),
     ]);
+  };
+
+  // Leader reviews pending quest claim in Leader Desk
+  const handleReviewClaim = async (claimId: string, action: 'approve' | 'reject') => {
+    try {
+      const res = await fetch('/api/quests/review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-leader-pin': auth?.leaderPin || '',
+        },
+        body: JSON.stringify({
+          claimId,
+          action,
+          reviewedBy: currentStudent.name,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.students) setStudents(data.students);
+        if (data.claims) setClaims(data.claims);
+        if (data.activityLog) {
+          setRecentLog(
+            data.activityLog.map((a: any) => ({
+              studentName: a.studentName,
+              delta: a.delta,
+              quest: a.quest,
+              time: a.time,
+            }))
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Error reviewing claim:', err);
+    }
   };
 
   // Reset all quests and badges back to initial uncompleted state
@@ -508,6 +576,8 @@ export default function App() {
           <LeaderDeskView
             students={students}
             announcements={announcements}
+            claims={claims}
+            onReviewClaim={handleReviewClaim}
             onToggleAttendance={handleToggleAttendance}
             onAddAnnouncement={handleAddAnnouncement}
             isLeader={isLeader}
@@ -517,6 +587,8 @@ export default function App() {
         {activeTab === 'loot' && (
           <LootBadgesView
             quests={quests}
+            claims={claims}
+            currentStudentId={currentStudent.id}
             onClaimQuest={handleClaimQuest}
             onResetQuests={handleResetQuests}
             userCoins={currentStudent.coins}
@@ -543,11 +615,17 @@ export default function App() {
             students={students}
             currentStudent={currentStudent}
             onSelectStudent={(id) => {
-              // In survey view, allow switching to view evaluation if leader or viewing
               if (isLeader) {
                 // Leaders can view any student survey
               }
             }}
+          />
+        )}
+
+        {activeTab === 'deliverables' && (
+          <DeliverablesView
+            currentStudent={currentStudent}
+            onRefreshStudent={refreshBootstrap}
           />
         )}
       </main>

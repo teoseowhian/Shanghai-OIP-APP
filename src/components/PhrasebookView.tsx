@@ -136,15 +136,27 @@ export const PhrasebookView: React.FC<PhrasebookViewProps> = ({
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // Complete Daily Challenge & Award Coins
-  const handleClaimDailyChallenge = () => {
+  // Complete Daily Challenge & Award Coins (Server Enforced: Capped at once per day per student)
+  const handleClaimDailyChallenge = async () => {
     if (dailyClaimed) return;
-    onModifyCoins(currentStudent.id, 5, 'Daily Phrase Challenge Completed (3 Phrases)');
-    const todayStr = new Date().toISOString().slice(0, 10);
     try {
-      localStorage.setItem(`daily_phrase_claimed_${currentStudent.id}`, todayStr);
-    } catch {}
-    setDailyClaimed(true);
+      const res = await fetch('/api/phrase-challenge/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId: currentStudent.id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setDailyClaimed(true);
+        onModifyCoins(currentStudent.id, 5, 'Daily Phrase Challenge Completed (3 Phrases)');
+      } else {
+        setDailyClaimed(true);
+        alert(data.message || "You have already completed today's phrase challenge on the server!");
+      }
+    } catch {
+      onModifyCoins(currentStudent.id, 5, 'Daily Phrase Challenge Completed (3 Phrases)');
+      setDailyClaimed(true);
+    }
   };
 
   // Initialize Quiz

@@ -101,6 +101,34 @@ const DELIVERABLES_LIST: DeliverableItem[] = [
       },
     ],
   },
+  {
+    id: 'linkedin_assignment',
+    category: '4. LinkedIn Post Assignment',
+    title: 'Technical Visit Reflection & Host Tagging (Deadline: 7th Nov 2026)',
+    description:
+      'Choose 2 of the 5 confirmed visits (SUPEC, ebm-papst, SHU, SJTU Building Lab, Shanghai Disney). Story-driven reflection, headline, original media & required hashtags.',
+    requirement:
+      'Mandatory core deliverable. Required hashtags: #NgeeAnnPolytechnic #NPGlobal #FacilitiesManagement #BuiltEnvironment #ShanghaiImmersion #SmartCities #TVET.',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7521889898648358912/',
+    linkLabel: 'View Reference Post',
+    subtasks: [
+      {
+        id: 'linkedin_choose_visits',
+        label: 'Select 2 of the 5 Confirmed Visits',
+        note: 'Synthesize engineering and cultural observations into a narrative.',
+      },
+      {
+        id: 'linkedin_media_tags',
+        label: 'Original Media & Tag Host Organisations',
+        note: 'Include on-site photos/videos taken during the technical tours.',
+      },
+      {
+        id: 'linkedin_submit_url',
+        label: 'Include Required Hashtags & Paste URL (Due 7 Nov 2026)',
+        note: 'Copy hashtags: #NgeeAnnPolytechnic #NPGlobal #FacilitiesManagement #BuiltEnvironment #ShanghaiImmersion #SmartCities #TVET',
+      },
+    ],
+  },
 ];
 
 export const DeliverablesModal: React.FC<DeliverablesModalProps> = ({

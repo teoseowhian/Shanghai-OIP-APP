@@ -19,11 +19,15 @@ import {
   FileCheck,
   AlertCircle,
   Share2,
+  Clock,
 } from 'lucide-react';
 import { Quest } from '../data/tripData';
+import { QuestClaim } from './LeaderDeskView';
 
 interface LootBadgesViewProps {
   quests: Quest[];
+  claims?: QuestClaim[];
+  currentStudentId?: string;
   onClaimQuest: (
     questId: string,
     proofData?: { photoUrl?: string; link?: string; note?: string }
@@ -88,6 +92,8 @@ export const getLinkMeta = (url?: string) => {
 
 export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
   quests,
+  claims = [],
+  currentStudentId,
   onClaimQuest,
   onResetQuests,
   userCoins,
@@ -113,8 +119,14 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const [resetSuccessAlert, setResetSuccessAlert] = useState<string | null>(null);
 
-  const completedCount = quests.filter((q) => q.status === 'completed').length;
-  const inProgressCount = quests.filter((q) => q.status === 'in_progress').length;
+  const completedCount = quests.filter((q) => {
+    const userClaim = claims.find((c) => c.studentId === currentStudentId && c.questId === q.id);
+    return userClaim?.status === 'approved' || (!userClaim && q.status === 'completed');
+  }).length;
+  const inProgressCount = quests.filter((q) => {
+    const userClaim = claims.find((c) => c.studentId === currentStudentId && c.questId === q.id);
+    return !userClaim && q.status === 'in_progress';
+  }).length;
 
   const filteredQuests = quests.filter((q) => {
     if (filterCategory === 'All') return true;
@@ -172,7 +184,7 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
     });
 
     setClaimedAlert(
-      `🎉 Congratulations! You unlocked the "${activeModalQuest.badgeName}" badge and earned +${activeModalQuest.coins} Quest Coins!`
+      `🎉 Proof submitted! Your claim for "${activeModalQuest.title}" is now PENDING review in the Leader Desk. Coins (+${activeModalQuest.coins}c) will be credited once approved by a student leader.`
     );
     setActiveModalQuest(null);
     setPhotoProofNote('');
@@ -184,7 +196,7 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
 
     setTimeout(() => {
       setClaimedAlert(null);
-    }, 4000);
+    }, 5000);
   };
 
   // Reset Quests Confirmation (No Password Required)
@@ -322,9 +334,21 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
       {/* Quests Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredQuests.map((quest) => {
-          const isDone = quest.status === 'completed';
-          const isInProgress = quest.status === 'in_progress';
-          const linkMeta = getLinkMeta(quest.proofLink);
+          const userClaim = claims.find(
+            (c) => c.studentId === currentStudentId && c.questId === quest.id
+          );
+          const isPending = userClaim?.status === 'pending';
+          const isApproved = userClaim?.status === 'approved';
+          const isRejected = userClaim?.status === 'rejected';
+
+          const isDone = isApproved || (!userClaim && quest.status === 'completed');
+          const isInProgress = !isDone && !isPending;
+
+          const proofPhoto = userClaim?.proofPhotoUrl || quest.proofPhotoUrl;
+          const proofLink = userClaim?.proofLink || quest.proofLink;
+          const proofNote = userClaim?.proofNote || quest.proofNote;
+          const submittedTime = userClaim?.submittedAt || quest.submittedAt;
+          const linkMeta = getLinkMeta(proofLink);
 
           return (
             <div
@@ -332,6 +356,8 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
               className={`rounded-3xl p-5 border transition-all flex flex-col justify-between ${
                 isDone
                   ? 'bg-gradient-to-br from-emerald-50/80 to-teal-50/50 border-emerald-200 shadow-xs'
+                  : isPending
+                  ? 'bg-gradient-to-br from-amber-50 to-orange-50/40 border-amber-400 shadow-md ring-2 ring-amber-400/30'
                   : isInProgress
                   ? 'bg-white border-amber-300 shadow-md ring-2 ring-amber-400/20'
                   : 'bg-slate-50/70 border-slate-200 opacity-80'
@@ -344,9 +370,17 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
                     {quest.category}
                   </span>
 
-                  <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-black border border-amber-300">
-                    <span>🪙</span>
-                    <span>+{quest.coins} Coins</span>
+                  <div className="flex items-center gap-1.5">
+                    {isPending && (
+                      <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[10px] font-black border border-amber-300 animate-pulse flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-amber-700" />
+                        <span>Pending Review</span>
+                      </span>
+                    )}
+                    <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-black border border-amber-300">
+                      <span>🪙</span>
+                      <span>+{quest.coins} Coins</span>
+                    </div>
                   </div>
                 </div>
 
@@ -356,6 +390,8 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
                     className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-sm border ${
                       isDone
                         ? 'bg-emerald-100 border-emerald-300'
+                        : isPending
+                        ? 'bg-amber-100 border-amber-400'
                         : isInProgress
                         ? 'bg-amber-100 border-amber-300'
                         : 'bg-slate-200 border-slate-300'
@@ -398,19 +434,48 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
                   {quest.task}
                 </div>
 
-                {/* Proof Submitted preview indicator if completed */}
-                {isDone && (quest.proofPhotoUrl || quest.proofLink || quest.proofNote) && (
-                  <div className="mt-2.5 p-2.5 bg-emerald-100/70 rounded-xl border border-emerald-300 text-xs space-y-1.5">
+                {/* Proof preview indicator if submitted or completed */}
+                {(isDone || isPending) && (proofPhoto || proofLink || proofNote) && (
+                  <div
+                    className={`mt-2.5 p-2.5 rounded-xl border text-xs space-y-1.5 ${
+                      isDone
+                        ? 'bg-emerald-100/70 border-emerald-300'
+                        : 'bg-amber-100/80 border-amber-300'
+                    }`}
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1 font-bold text-emerald-900 text-[11px]">
-                        <FileCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                        <span>Proof Verified {quest.submittedAt ? `(${quest.submittedAt})` : ''}</span>
+                      <span
+                        className={`flex items-center gap-1 font-bold text-[11px] ${
+                          isDone ? 'text-emerald-900' : 'text-amber-900'
+                        }`}
+                      >
+                        {isDone ? (
+                          <FileCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                        ) : (
+                          <Clock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                        )}
+                        <span>
+                          {isDone ? 'Proof Verified' : 'Proof Submitted (Awaiting Approval)'}{' '}
+                          {submittedTime ? `(${submittedTime})` : ''}
+                        </span>
                       </span>
                       <button
-                        onClick={() => setViewProofQuest(quest)}
-                        className="text-[11px] font-extrabold text-emerald-800 hover:text-emerald-950 underline cursor-pointer"
+                        onClick={() =>
+                          setViewProofQuest({
+                            ...quest,
+                            proofPhotoUrl: proofPhoto,
+                            proofLink: proofLink,
+                            proofNote: proofNote,
+                            submittedAt: submittedTime,
+                          })
+                        }
+                        className={`text-[11px] font-extrabold underline cursor-pointer ${
+                          isDone
+                            ? 'text-emerald-800 hover:text-emerald-950'
+                            : 'text-amber-900 hover:text-amber-950'
+                        }`}
                       >
-                        View Full Proof
+                        View Proof
                       </button>
                     </div>
 
@@ -421,13 +486,13 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
                           {linkMeta.tag}
                         </span>
                         <a
-                          href={quest.proofLink}
+                          href={proofLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[11px] text-blue-700 underline truncate max-w-[160px] inline-flex items-center gap-0.5"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <span className="truncate">{quest.proofLink}</span>
+                          <span className="truncate">{proofLink}</span>
                           <ExternalLink className="w-2.5 h-2.5 shrink-0" />
                         </a>
                       </div>
@@ -440,11 +505,51 @@ export const LootBadgesView: React.FC<LootBadgesViewProps> = ({
               <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                 {isDone ? (
                   <button
-                    onClick={() => setViewProofQuest(quest)}
+                    onClick={() =>
+                      setViewProofQuest({
+                        ...quest,
+                        proofPhotoUrl: proofPhoto,
+                        proofLink: proofLink,
+                        proofNote: proofNote,
+                        submittedAt: submittedTime,
+                      })
+                    }
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 px-3 py-2 rounded-xl border border-emerald-300 w-full justify-center transition-colors cursor-pointer"
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Unlocked & Awarded! (View Details)</span>
+                    <span>Unlocked & Awarded! (+{quest.coins}c)</span>
+                  </button>
+                ) : isPending ? (
+                  <button
+                    onClick={() =>
+                      setViewProofQuest({
+                        ...quest,
+                        proofPhotoUrl: proofPhoto,
+                        proofLink: proofLink,
+                        proofNote: proofNote,
+                        submittedAt: submittedTime,
+                      })
+                    }
+                    className="w-full py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+                    title="Your proof has been submitted and is waiting for student leader approval in the Leader Desk"
+                  >
+                    <Clock className="w-3.5 h-3.5 text-slate-950" />
+                    <span>⏳ Pending Leader Review (View Submission)</span>
+                  </button>
+                ) : isRejected ? (
+                  <button
+                    onClick={() => {
+                      setActiveModalQuest(quest);
+                      setPhotoProofNote('');
+                      setProofWebLink('');
+                      setUploadedImage(null);
+                      setUploadedFileName(null);
+                      setSubmitError('Your previous submission was declined. Please upload fresh proof.');
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer active:scale-95"
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>✕ Proof Declined (Click to Re-submit)</span>
                   </button>
                 ) : isInProgress ? (
                   <button
