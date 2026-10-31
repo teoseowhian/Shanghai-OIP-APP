@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Clock, Train, Check, Shirt, User, Sparkles, Navigation, Luggage } from 'lucide-react';
+import { Calendar, MapPin, Clock, Train, Check, Shirt, User, Sparkles, Navigation, Luggage, Plane, Users } from 'lucide-react';
 import { ITINERARY, ItineraryDay } from '../data/tripData';
 
 interface ItineraryViewProps {
@@ -10,8 +10,8 @@ interface ItineraryViewProps {
 export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, onOpenPackingList }) => {
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [checkedInEvents, setCheckedInEvents] = useState<Record<string, boolean>>({
-    '1-Flight Arrival at PVG Terminal 2': true,
-    '1-Maglev Experience to Longyang Road': true,
+    '1-Arrive Shanghai Pudong Terminal 1 (+5 Coins check-in) — immigration & baggage': true,
+    '1-Maglev Experience to Longyang Road (+20 Coins) — PVG Maglev Station; connect Metro Line 2 -> Line 1 to Yanchang Rd': true,
   });
 
   const selectedDay = ITINERARY.find((d) => d.dayNumber === selectedDayNumber) || ITINERARY[0];
@@ -130,6 +130,104 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, on
             ))}
           </div>
         </div>
+
+        {/* Confirmed Flight Card (Displayed at the top of Day 1 and Day 7) */}
+        {selectedDay.flightInfo && (
+          <div className="bg-gradient-to-br from-slate-900 via-sky-950 to-indigo-950 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-sky-400/40 relative overflow-hidden animate-in fade-in duration-200">
+            {/* Ambient background glow */}
+            <div className="absolute -top-10 -right-10 w-48 h-48 bg-sky-500/15 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 shadow-sm shrink-0">
+                  <Plane className="w-5 h-5 text-sky-300 transform -rotate-45" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-sky-500/30 text-sky-200 px-2.5 py-0.5 rounded-full border border-sky-400/40">
+                      ✈️ Confirmed Flight Card
+                    </span>
+                    <span className="text-xs font-bold text-amber-300">
+                      {selectedDay.dayNumber === 1 ? 'Outbound Journey (Day 1)' : 'Homeward Bound (Day 7)'}
+                    </span>
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-black tracking-tight mt-1 text-white">
+                    {selectedDay.flightInfo.airline} • <span className="text-amber-300 font-mono">{selectedDay.flightInfo.flightNumber}</span>
+                  </h4>
+                </div>
+              </div>
+
+              {/* Group Meeting Time Pill */}
+              <div className="bg-amber-400 text-slate-950 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-md font-bold text-xs self-start sm:self-center">
+                <Users className="w-4 h-4 text-slate-950 shrink-0" />
+                <span>Group Meeting: <strong className="font-black text-slate-950">{selectedDay.flightInfo.groupMeetingTime}</strong></span>
+              </div>
+            </div>
+
+            {/* Flight Route Visualizer */}
+            <div className="py-5 grid grid-cols-1 sm:grid-cols-3 items-center gap-4">
+              {/* Origin Airport */}
+              <div className="text-left">
+                <div className="text-xs font-bold uppercase tracking-wider text-sky-300">Departure</div>
+                <div className="text-2xl sm:text-3xl font-black font-mono text-white tracking-wide mt-0.5">
+                  {selectedDay.flightInfo.departureTime}
+                </div>
+                <div className="text-sm font-extrabold text-sky-100 mt-0.5">
+                  {selectedDay.flightInfo.departureAirport}
+                </div>
+                {selectedDay.flightInfo.departureTerminal && (
+                  <div className="text-xs font-semibold text-slate-300">
+                    {selectedDay.flightInfo.departureTerminal}
+                  </div>
+                )}
+              </div>
+
+              {/* Direct Flight Center Display */}
+              <div className="flex flex-col items-center justify-center text-center">
+                <span className="text-xs font-bold text-sky-300 font-mono tracking-widest uppercase bg-sky-900/60 px-2.5 py-0.5 rounded-md border border-sky-400/30">
+                  {selectedDay.flightInfo.flightNumber}
+                </span>
+                <div className="w-full flex items-center justify-center gap-2 my-2">
+                  <div className="h-0.5 w-10 sm:w-16 bg-gradient-to-r from-transparent to-sky-400/60" />
+                  <Plane className="w-4 h-4 text-sky-300" />
+                  <div className="h-0.5 w-10 sm:w-16 bg-gradient-to-r from-sky-400/60 to-transparent" />
+                </div>
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Direct Non-Stop</span>
+              </div>
+
+              {/* Destination Airport */}
+              <div className="text-left sm:text-right">
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-300">Arrival</div>
+                <div className="text-2xl sm:text-3xl font-black font-mono text-amber-300 tracking-wide mt-0.5">
+                  {selectedDay.flightInfo.arrivalTime}
+                </div>
+                <div className="text-sm font-extrabold text-sky-100 mt-0.5">
+                  {selectedDay.flightInfo.arrivalAirport}
+                </div>
+                {selectedDay.flightInfo.arrivalTerminal && (
+                  <div className="text-xs font-bold text-amber-200">
+                    {selectedDay.flightInfo.arrivalTerminal}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Meeting Point & Important Notes */}
+            <div className="pt-3.5 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+              <div className="flex items-center gap-2 text-slate-300">
+                <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>
+                  <strong className="text-white">Assembly & Roll Call:</strong> {selectedDay.flightInfo.meetingLocation}
+                </span>
+              </div>
+              {selectedDay.flightInfo.notes && (
+                <div className="text-[11px] text-sky-200/90 font-medium">
+                  ℹ️ {selectedDay.flightInfo.notes}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Timeline Schedule */}
         <div className="space-y-4">

@@ -205,7 +205,7 @@ export const SHANGHAI_PHRASES: Phrase[] = [
     hanzi: '请问去浦东机场坐磁悬浮在哪里买票？',
     pinyin: 'Qǐng wèn qù Pǔ dōng Jī chǎng zuò Cí xuán fú zài nǎ lǐ mǎi piào?',
     english: 'Where can I buy tickets for the Maglev train to Pudong Airport?',
-    situationTip: 'Useful at Longyang Road station when experiencing the 430km/h Maglev.',
+    situationTip: 'Useful at Longyang Road station when experiencing the 300 km/h Maglev.',
   },
   {
     id: 'p23',

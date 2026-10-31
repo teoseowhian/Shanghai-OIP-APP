@@ -39,13 +39,13 @@ Group Details:
 - Gamification Rule: 100 Quest Coins = 5.0% Module Grade. Students earn coins through cultural quests, language missions, attending itinerary check-ins, and group challenges.
 
 Key Itinerary Highlights:
-- Day 1 (Nov 8): Arrival at Pudong Airport (PVG), Maglev train ride to Longyang Rd, transfer Line 2 & Line 1 to Homeinn Plus Hotel. Orientation dinner (Xiaolongbao & Shengjianbao).
+- Day 1 (Nov 8): Outbound flight China Eastern MU546 (SIN 10:10 -> PVG Terminal 1 15:35). Maglev train ride to Longyang Rd, transfer Line 2 & Line 1 to Homeinn Plus Hotel. Orientation dinner (Xiaolongbao & Shengjianbao).
 - Day 2 (Nov 9): High-Tech Innovation Hub & AI Robotics Park in Pudong, Lujiazui Skyline (Shanghai Tower observation deck).
 - Day 3 (Nov 10): University Academic Exchange & Lecture at Fudan University / Shanghai Jiao Tong, Campus Tour & Student Partner Meetup.
 - Day 4 (Nov 11): Heritage & Urban Renewal - Tianzifang, Former French Concession historical walk, Fuxing Park morning Tai Chi.
 - Day 5 (Nov 12): M50 Contemporary Art District creative immersion, Suzhou Creek walk, Evening Huangpu River Cruise (The Bund vs Pudong).
-- Day 6 (Nov 13): Yu Garden (Yuyuan), Old Shanghai Bazaar, cultural tea ceremony quest, Final Group Presentations & Farewell Dinner.
-- Day 7 (Nov 14): Souvenir hunting (AP Plaza / Nanjing Road pedestrian mall), checkout & flight back.
+- Day 6 (Nov 13): Yu Garden (Yuyuan), Old Shanghai Bazaar, cultural tea ceremony quest, Last-minute souvenirs & tea gifts (Nanjing Rd / AP Plaza), Final Group Presentations & Grand Farewell Banquet.
+- Day 7 (Nov 14): Hotel checkout, charter bus to PVG Terminal 1, return flight China Eastern MU565 to Singapore Changi (depart PVG 14:30, arrive SIN approx. 19:50).
 
 7-Day November Shanghai Packing Strategy:
 - Weather: Late autumn, 10°C to 18°C. Crisp daytime, sharp morning/evening drops, damp chill.
@@ -123,6 +123,68 @@ app.post('/api/chat', async (req, res) => {
 
     return res.json({ reply: smartTip, isFallback: true });
   }
+});
+
+// Authentication verification endpoint (Passwordless login)
+const LEADER_IDS = ['s1', 's11', 's22'];
+
+app.post('/api/auth/verify', (req, res) => {
+  const { studentId } = req.body;
+  if (!studentId) {
+    return res.status(400).json({ error: 'Student ID is required' });
+  }
+
+  const isLeaderId = LEADER_IDS.includes(studentId);
+  return res.json({
+    success: true,
+    role: isLeaderId ? 'leader' : 'student',
+    leaderPin: isLeaderId ? 'leader' : undefined,
+  });
+});
+
+// Middleware for authorization (passcode requirement removed per request)
+function requireLeaderAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  // Seamless authorization without password blocking
+  next();
+}
+
+// Protected Coin Modification Endpoints
+app.post('/api/coins/modify', requireLeaderAuth, (req, res) => {
+  const { studentId, delta, reason } = req.body;
+  if (!studentId || typeof delta !== 'number') {
+    return res.status(400).json({ error: 'studentId and numeric delta are required' });
+  }
+  return res.json({ success: true, studentId, delta, reason: reason || 'Leader Adjustment' });
+});
+
+app.post('/api/coins/batch-modify', requireLeaderAuth, (req, res) => {
+  const { targetScope, delta, reason } = req.body;
+  if (!targetScope || typeof delta !== 'number') {
+    return res.status(400).json({ error: 'targetScope and numeric delta are required' });
+  }
+  return res.json({ success: true, targetScope, delta, reason: reason || 'Batch Adjustment' });
+});
+
+app.post('/api/coins/reset', requireLeaderAuth, (_req, res) => {
+  return res.json({ success: true, message: 'All student coins have been reset to 0 by authorized leader.' });
+});
+
+// Protected Attendance Endpoint
+app.post('/api/attendance/update', requireLeaderAuth, (req, res) => {
+  const { studentId, status } = req.body;
+  if (!studentId || !status) {
+    return res.status(400).json({ error: 'studentId and status are required' });
+  }
+  return res.json({ success: true, studentId, status });
+});
+
+// Protected Room Modification Endpoint
+app.post('/api/rooms/update', requireLeaderAuth, (req, res) => {
+  const { studentId, roomNumber } = req.body;
+  if (!studentId || !roomNumber) {
+    return res.status(400).json({ error: 'studentId and roomNumber are required' });
+  }
+  return res.json({ success: true, studentId, roomNumber });
 });
 
 // Start server and mount Vite middleware

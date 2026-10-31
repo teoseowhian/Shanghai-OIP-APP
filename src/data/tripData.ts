@@ -27,6 +27,24 @@ export interface Quest {
   status: 'locked' | 'in_progress' | 'completed';
   badgeName: string;
   badgeLevel: 'Bronze' | 'Silver' | 'Gold' | 'Mythic';
+  proofPhotoUrl?: string;
+  proofLink?: string;
+  proofNote?: string;
+  submittedAt?: string;
+}
+
+export interface FlightInfo {
+  airline: string;
+  flightNumber: string;
+  departureAirport: string;
+  departureTerminal?: string;
+  departureTime: string;
+  arrivalAirport: string;
+  arrivalTerminal?: string;
+  arrivalTime: string;
+  groupMeetingTime: string;
+  meetingLocation: string;
+  notes?: string;
 }
 
 export interface ItineraryDay {
@@ -37,12 +55,15 @@ export interface ItineraryDay {
   dressCode: string;
   leadInCharge: string;
   highlights: string[];
+  flightInfo?: FlightInfo;
   schedule: {
     time: string;
     event: string;
     location: string;
     metroTip?: string;
     coinsAvailable?: number;
+    optional?: boolean;
+    note?: string;
   }[];
 }
 
@@ -581,19 +602,19 @@ export const INITIAL_QUESTS: Quest[] = [
     description: 'Taste authentic soup dumplings and order using Chinese phrases.',
     task: 'Take a photo of steaming soup dumplings with black vinegar & ginger from a local shop near Jing’An.',
     icon: '🥟',
-    status: 'completed',
+    status: 'in_progress',
     badgeName: 'Soup Dumpling Sage',
     badgeLevel: 'Silver',
   },
   {
     id: 'q2',
-    title: 'Maglev 431 km/h Speed Run',
+    title: 'Maglev 300 km/h Speed Run',
     category: 'Navigation',
     coins: 20,
-    description: 'Experience magnetic levitation from Pudong Airport to Longyang Road.',
-    task: 'Snap a selfie next to the on-board speed speedometer reading above 300 km/h.',
+    description: 'Experience magnetic levitation from Pudong Airport to Longyang Road at up to 300 km/h.',
+    task: 'Snap a selfie next to the on-board speed display showing 300 km/h.',
     icon: '🚅',
-    status: 'completed',
+    status: 'in_progress',
     badgeName: 'Sonic Levitation',
     badgeLevel: 'Gold',
   },
@@ -641,7 +662,7 @@ export const INITIAL_QUESTS: Quest[] = [
     description: 'Navigate without ride-hailing from Jing’An Temple to Lujiazui independently.',
     task: 'Take a picture of the Metro Line 2 transfer sign and keep a record of your transit card or Alipay transport QR.',
     icon: '🚇',
-    status: 'completed',
+    status: 'in_progress',
     badgeName: 'Subway Pathfinder',
     badgeLevel: 'Bronze',
   },
@@ -669,6 +690,54 @@ export const INITIAL_QUESTS: Quest[] = [
     badgeName: 'Lanehouse Sleuth',
     badgeLevel: 'Bronze',
   },
+  {
+    id: 'q9',
+    title: 'Shanghai University Youth Network',
+    category: 'Academic',
+    coins: 20,
+    description: 'Connect and build authentic cross-border friendships with local Shanghai university undergraduates.',
+    task: 'Exchange contacts (WeChat ID or social handle) with at least 5 Shanghai university students during campus exchanges.',
+    icon: '🤝',
+    status: 'in_progress',
+    badgeName: 'Campus Ambassador',
+    badgeLevel: 'Gold',
+  },
+  {
+    id: 'q10',
+    title: 'Closing Ceremony Spotlight Showcase',
+    category: 'Culture',
+    coins: 15,
+    description: 'Celebrate the journey by performing on stage in the Grand Farewell Gala.',
+    task: 'Perform a talent, musical song, dance, acoustic set, or energetic group skit during the OIP Shanghai Closing Ceremony.',
+    icon: '🎭',
+    status: 'in_progress',
+    badgeName: 'Gala Showstopper',
+    badgeLevel: 'Gold',
+  },
+  {
+    id: 'q11',
+    title: 'AP Plaza Street Bargain Master',
+    category: 'Culture',
+    coins: 15,
+    description: 'Haggle like a local at the Science & Tech AP Plaza gift market using practical Chinese.',
+    task: 'Successfully negotiate a souvenir discount using phrases like "太贵了" or "便宜一点" and show receipt/item photo.',
+    icon: '🛍️',
+    status: 'in_progress',
+    badgeName: 'Bargain Champion',
+    badgeLevel: 'Silver',
+  },
+  {
+    id: 'q12',
+    title: 'SJTU Dragon Pose Creative Snapshot',
+    category: 'Academic',
+    coins: 10,
+    description: 'Take an epic team commemorative picture with Shanghai engineering buddies.',
+    task: 'Strike a collaborative DE engineering dragon formation pose with local students in front of the iconic campus gate or engineering library.',
+    icon: '🐉',
+    status: 'in_progress',
+    badgeName: 'Dragon Alliance',
+    badgeLevel: 'Bronze',
+  },
 ];
 
 export const ITINERARY: ItineraryDay[] = [
@@ -679,13 +748,28 @@ export const ITINERARY: ItineraryDay[] = [
     theme: 'Arrival & Transit Immersion',
     dressCode: 'Comfortable Travel Casual & Warm Jacket',
     leadInCharge: 'Latasha & Ren ZhuoJing',
-    highlights: ['Pudong International Airport (PVG)', 'Maglev High Speed Train', 'Homeinn Plus Hotel Check-in', 'Welcome Dinner'],
+    highlights: ['Singapore Changi (SIN)', 'Pudong International Airport (PVG) Terminal 1', 'Maglev High Speed Train', 'Homeinn Plus Hotel Check-in', 'Welcome Dinner'],
+    flightInfo: {
+      airline: 'China Eastern Airlines',
+      flightNumber: 'MU546',
+      departureAirport: 'Singapore Changi (SIN)',
+      departureTerminal: 'Terminal 3',
+      departureTime: '10:10',
+      arrivalAirport: 'Shanghai Pudong (PVG)',
+      arrivalTerminal: 'Terminal 1',
+      arrivalTime: '15:35',
+      groupMeetingTime: '08:00 am',
+      meetingLocation: 'Changi Airport (China Eastern check-in counter)',
+      notes: 'Group roll call with Latasha. Have passport, arrival card & boarding pass ready.',
+    },
     schedule: [
-      { time: '13:30', event: 'Flight Arrival at PVG Terminal 2', location: 'Pudong Airport', coinsAvailable: 5 },
-      { time: '14:45', event: 'Maglev Experience to Longyang Road', location: 'PVG Maglev Station', metroTip: 'Connect to Metro Line 2 -> Line 1 to Yanchang Rd', coinsAvailable: 20 },
-      { time: '16:30', event: 'Hotel Check-in & Room Allocation', location: 'Homeinn Plus Hotel (Yanchang Middle Rd 302)', metroTip: 'Line 1 Yanchang Road Station' },
-      { time: '18:30', event: 'Welcome Orientation & Shengjianbao Dinner', location: 'Jing’An Food Street', coinsAvailable: 10 },
-      { time: '21:00', event: 'Daily Briefing & Safety Roll Call with Latasha', location: 'Hotel Lobby Conference Rm' },
+      { time: '08:00', event: 'Group meet at Changi Airport (check-in counter) — roll call with Latasha', location: 'Singapore Changi Airport (SIN)' },
+      { time: '10:10', event: 'Depart Singapore (China Eastern MU546)', location: 'Changi Airport' },
+      { time: '15:35', event: 'Arrive Shanghai Pudong Terminal 1 (+5 Coins check-in) — immigration & baggage', location: 'Shanghai Pudong Terminal 1', coinsAvailable: 5 },
+      { time: '16:45', event: 'Maglev Experience to Longyang Road (+20 Coins) — PVG Maglev Station; connect Metro Line 2 -> Line 1 to Yanchang Rd', location: 'PVG Maglev Station', metroTip: 'Connect to Metro Line 2 -> Line 1 to Yanchang Rd', coinsAvailable: 20 },
+      { time: '18:00', event: 'Hotel Check-in & Room Allocation — Homeinn Plus Hotel (Yanchang Middle Rd 302)', location: 'Homeinn Plus Hotel (Yanchang Middle Rd 302)', metroTip: 'Line 1 Yanchang Road Station' },
+      { time: '19:30', event: 'Welcome Orientation & Shengjianbao Dinner (+10 Coins) — Jing\'An Food Street', location: 'Jing\'An Food Street', coinsAvailable: 10 },
+      { time: '21:30', event: 'Daily Briefing & Safety Roll Call with Latasha — Hotel Lobby Conference Rm', location: 'Hotel Lobby Conference Rm' },
     ],
   },
   {
@@ -758,27 +842,45 @@ export const ITINERARY: ItineraryDay[] = [
     theme: 'Classical Heritage & Final Assessment Showcase',
     dressCode: 'Semi-Formal Evening Attire',
     leadInCharge: 'Latasha, Ren ZhuoJing & Chua Yu Zhe',
-    highlights: ['Yu Garden Ming Dynasty Pavilions', 'Old Town Bazaar & Tea House', 'Module Group Presentation', 'Awards & 5% Grade Reveal'],
+    highlights: ['Yu Garden Ming Dynasty Pavilions', 'Old Town Bazaar & Tea House', 'Module Group Presentation', 'Nanjing Rd / AP Plaza Souvenir Hunt', 'Awards & 5% Grade Reveal'],
     schedule: [
       { time: '09:00', event: 'Yu Garden Classical Rockeries & Pavilions', location: 'Yuyuan Old City', coinsAvailable: 15 },
       { time: '11:00', event: 'Gongfu Tea Ceremony Challenge', location: 'Huxinting Teahouse', coinsAvailable: 20 },
       { time: '14:30', event: 'Final OIP Group Presentations & Quest Showcase', location: 'Hotel Multi-purpose Room' },
-      { time: '18:30', event: 'Grand Farewell Banquet & Grade Award Ceremony', location: 'Shanghai Classical Garden Dining', coinsAvailable: 25 },
+      { time: '18:30', event: 'Last-minute Souvenirs & Tea Gifts (+15 Coins) — Nanjing Rd / AP Plaza', location: 'Nanjing Rd / AP Plaza', metroTip: 'Metro Line 2 to East Nanjing Rd / Science & Tech Museum (AP Plaza)', coinsAvailable: 15 },
+      { time: '20:00', event: 'Grand Farewell Banquet & Grade Award Ceremony', location: 'Shanghai Classical Garden Dining', coinsAvailable: 25 },
+      { time: '21:30', event: 'Daily Briefing & Safety Roll Call with Latasha', location: 'Hotel Lobby Conference Rm' },
     ],
   },
   {
     dayNumber: 7,
     date: 'Sat, 14 Nov 2026',
-    title: 'Final Souvenir Hunt & Homeward Bound',
-    theme: 'Checkout & Journey Conclusion',
+    title: 'Homeward Bound to Singapore (Flight MU565)',
+    theme: 'Checkout, PVG Transit & Changi Arrival',
     dressCode: 'Comfortable Travel Wear',
     leadInCharge: 'Latasha & Chua Yu Zhe',
-    highlights: ['Nanjing Road Pedestrian Mall', 'AP Plaza Market Bargain Quest', 'Final Hotel Checkout', 'Transit to PVG Airport'],
+    highlights: ['Final Hotel Checkout', 'Transit to PVG Terminal 1', 'Flight MU565 to Singapore'],
+    flightInfo: {
+      airline: 'China Eastern Airlines',
+      flightNumber: 'MU565',
+      departureAirport: 'Shanghai Pudong (PVG)',
+      departureTerminal: 'Terminal 1',
+      departureTime: '14:30',
+      arrivalAirport: 'Singapore Changi (SIN)',
+      arrivalTerminal: 'Terminal 3',
+      arrivalTime: 'approx. 19:50 (local time)',
+      groupMeetingTime: '10:30 am (Hotel Lobby) / 11:30 am (PVG T1 Counter)',
+      meetingLocation: 'Homeinn Plus Hotel Lobby (bus departure) & PVG Terminal 1 China Eastern Counter',
+      notes: 'Strict check-in roll call with Latasha & Chua Yu Zhe. Max check-in luggage 23kg.',
+    },
     schedule: [
-      { time: '09:00', event: 'Luggage Packing & Room Inspection', location: 'Homeinn Plus Hotel' },
-      { time: '10:30', event: 'Last-minute Souvenirs & Tea Gifts', location: 'Nanjing Rd / AP Plaza', coinsAvailable: 15 },
-      { time: '13:00', event: 'Check-out & Bus Departure to PVG', location: 'Hotel Lobby' },
-      { time: '15:00', event: 'PVG Airport Flight Check-in & Departure', location: 'Pudong Terminal 2' },
+      { time: '07:30', event: 'Breakfast & final packing', location: 'Homeinn Plus Hotel' },
+      { time: '08:30', event: 'Room Inspection & Check-out — Homeinn Plus Hotel', location: 'Homeinn Plus Hotel' },
+      { time: '09:00', event: 'Last-minute snacks & tea gifts near the hotel, Jing\'An (optional, no coins)', location: 'Jing\'An / Yanchang Rd Area', optional: true },
+      { time: '10:30', event: 'Bus departure to PVG — Hotel Lobby (strict, roll call with Latasha & Chua Yu Zhe)', location: 'Homeinn Plus Hotel Lobby' },
+      { time: '11:30', event: 'Arrive PVG Terminal 1 — group check-in at China Eastern counter', location: 'Shanghai Pudong Terminal 1' },
+      { time: '14:30', event: 'Depart Shanghai (China Eastern MU565)', location: 'Shanghai Pudong Terminal 1' },
+      { time: '19:50', event: 'approx. 19:50 Arrive Singapore Changi — final roll call before dismissal', location: 'Singapore Changi Airport (SIN)' },
     ],
   },
 ];

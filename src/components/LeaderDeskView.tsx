@@ -32,6 +32,7 @@ interface LeaderDeskViewProps {
   announcements: Announcement[];
   onToggleAttendance: (studentId: string, newStatus: 'present' | 'late' | 'excused') => void;
   onAddAnnouncement: (announcement: Omit<Announcement, 'id' | 'timestamp'>) => void;
+  isLeader: boolean;
 }
 
 export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
@@ -39,8 +40,23 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
   announcements,
   onToggleAttendance,
   onAddAnnouncement,
+  isLeader,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'attendance' | 'hotel' | 'budget' | 'notices' | 'research'>('attendance');
+
+  if (!isLeader) {
+    return (
+      <div className="bg-white rounded-3xl p-8 border border-slate-200 text-center max-w-lg mx-auto my-12 shadow-sm animate-in fade-in">
+        <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-4 text-2xl">
+          🔒
+        </div>
+        <h2 className="text-xl font-black text-slate-900">Leader Desk Restricted</h2>
+        <p className="text-sm text-slate-600 mt-2">
+          This area contains private hotel room assignments, emergency roll-call desks, and administrative controls restricted strictly to signed-in student leaders (Latasha, Ren ZhuoJing, Chua Yu Zhe) and faculty.
+        </p>
+      </div>
+    );
+  }
   
   // Notice form state
   const [noticeTitle, setNoticeTitle] = useState('');

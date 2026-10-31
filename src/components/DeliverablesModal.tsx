@@ -229,7 +229,7 @@ export const DeliverablesModal: React.FC<DeliverablesModalProps> = ({
               <span className="font-bold text-white flex items-center gap-1 bg-emerald-900/40 px-2.5 py-1 rounded-lg">
                 <span>{currentStudent?.avatar || '🧑🏻‍🎓'}</span>
                 <span>{currentStudent?.name || 'Student'}</span>
-                <span className="text-emerald-300">({currentStudent?.roomNumber})</span>
+                <span className="text-emerald-300">({currentStudent?.squad})</span>
               </span>
             </div>
 

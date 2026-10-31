@@ -225,7 +225,7 @@ export const SurveyView: React.FC<SurveyViewProps> = ({
                   const hasSubmitted = !!allResponses[st.id];
                   return (
                     <option key={st.id} value={st.id}>
-                      {idx + 1}. {st.name} — {st.squad} ({st.roomNumber}) {hasSubmitted ? '✓ [Submitted]' : '⏳ [Pending]'}
+                      {idx + 1}. {st.name} — {st.squad} {hasSubmitted ? '✓ [Submitted]' : '⏳ [Pending]'}
                     </option>
                   );
                 })}
@@ -250,8 +250,6 @@ export const SurveyView: React.FC<SurveyViewProps> = ({
               </div>
               <div className="text-xs text-slate-600 font-semibold flex items-center gap-2 mt-0.5">
                 <span>{activeStudent.squad}</span>
-                <span>•</span>
-                <span>{activeStudent.roomNumber}</span>
                 <span>•</span>
                 <span className="text-amber-700 font-bold">{activeStudent.coins} coins</span>
               </div>

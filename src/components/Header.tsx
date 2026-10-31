@@ -1,13 +1,13 @@
 import React from 'react';
-import { Trophy, ClipboardList, Gift, MapPin, User, Sparkles, Luggage, GraduationCap, ClipboardCheck, Languages } from 'lucide-react';
+import { Trophy, ClipboardList, Gift, MapPin, User, Sparkles, Luggage, GraduationCap, ClipboardCheck, Languages, LogOut } from 'lucide-react';
 import { Student } from '../data/tripData';
 
 interface HeaderProps {
   activeTab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey';
   setActiveTab: (tab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey') => void;
   currentStudent: Student;
-  onSelectStudent: (studentId: string) => void;
-  allStudents: Student[];
+  isLeader: boolean;
+  onSignOut: () => void;
   onOpenPackingList?: () => void;
   onOpenDeliverables?: () => void;
 }
@@ -16,8 +16,8 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   currentStudent,
-  onSelectStudent,
-  allStudents,
+  isLeader,
+  onSignOut,
   onOpenPackingList,
   onOpenDeliverables,
 }) => {
@@ -92,17 +92,20 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Rankings</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('leader_desk')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
-                activeTab === 'leader_desk'
-                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-400/50'
-                  : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
-              }`}
-            >
-              <ClipboardList className={`w-4 h-4 ${activeTab === 'leader_desk' ? 'text-amber-300' : 'text-blue-500'}`} />
-              <span>Leader Desk</span>
-            </button>
+            {/* Leader Desk - Only accessible and visible to signed-in student leaders */}
+            {isLeader && (
+              <button
+                onClick={() => setActiveTab('leader_desk')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
+                  activeTab === 'leader_desk'
+                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-400/50'
+                    : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+                }`}
+              >
+                <ClipboardList className={`w-4 h-4 ${activeTab === 'leader_desk' ? 'text-amber-300' : 'text-blue-500'}`} />
+                <span>Leader Desk</span>
+              </button>
+            )}
 
             <button
               onClick={() => setActiveTab('loot')}
@@ -180,22 +183,39 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* Profile Persona Switcher */}
-            <div className="relative ml-1 sm:ml-2">
-              <div className="flex items-center gap-1.5 pl-2.5 pr-2 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+            {/* Signed-in User Identity & Sign Out */}
+            <div className="relative ml-1 sm:ml-2 flex items-center gap-2">
+              <div
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-xs shadow-2xs"
+                title={`Signed in as ${currentStudent.name}`}
+              >
                 <span className="text-base">{currentStudent.avatar}</span>
-                <select
-                  value={currentStudent.id}
-                  onChange={(e) => onSelectStudent(e.target.value)}
-                  className="bg-transparent font-semibold text-slate-800 cursor-pointer focus:outline-none pr-1"
-                >
-                  {allStudents.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} ({s.coins}c)
-                    </option>
-                  ))}
-                </select>
+                <div className="leading-tight text-left">
+                  <div className="font-bold text-slate-800 flex items-center gap-1 max-w-[140px] truncate">
+                    <span>{currentStudent.name}</span>
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
+                    <span className="text-amber-700 font-bold">{currentStudent.coins}c</span>
+                    <span>•</span>
+                    {isLeader ? (
+                      <span className="text-amber-800 font-extrabold">👑 Leader</span>
+                    ) : (
+                      <span className="text-slate-600 font-medium">🎓 Student</span>
+                    )}
+                  </div>
+                </div>
               </div>
+
+              {/* Return to Login / Switch User */}
+              <button
+                onClick={onSignOut}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-300 hover:border-rose-300 font-bold text-xs shadow-2xs transition-all cursor-pointer active:scale-95 shrink-0"
+                title="Return to Login Screen / Switch Account"
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                <span className="hidden sm:inline">Return to Login</span>
+                <span className="sm:hidden">Login</span>
+              </button>
             </div>
 
           </div>

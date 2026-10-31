@@ -15,50 +15,62 @@ import {
   ShieldAlert,
   Eye,
   EyeOff,
+  Download,
+  Users,
+  Check,
+  LogOut,
 } from 'lucide-react';
 import { Student } from '../data/tripData';
 
 interface RankingsViewProps {
   students: Student[];
   onModifyCoins: (studentId: string, amount: number, questTitle: string) => void;
+  onBatchModifyCoins?: (
+    targetScope: 'all' | 'Team Dragon' | 'Team Xiaolongbao' | 'Team Maglev' | string,
+    amount: number,
+    questTitle: string
+  ) => void;
   onResetAllCoins: () => void;
   currentStudent: Student;
+  isLeader: boolean;
+  onReturnToLogin?: () => void;
 }
 
 export const RankingsView: React.FC<RankingsViewProps> = ({
   students,
   onModifyCoins,
+  onBatchModifyCoins,
   onResetAllCoins,
   currentStudent,
+  isLeader,
+  onReturnToLogin,
 }) => {
   const [selectedSquad, setSelectedSquad] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   
-  // Coin Modification Modal State (Requires Passcode: 45679)
+  // Coin Modification Modal State (No passcode required)
   const [showLogModal, setShowLogModal] = useState<boolean>(false);
   const [modalMode, setModalMode] = useState<'award' | 'deduct'>('award');
+  const [targetScope, setTargetScope] = useState<'all' | 'Team Dragon' | 'Team Xiaolongbao' | 'Team Maglev' | 'individual'>('individual');
   const [targetStudentId, setTargetStudentId] = useState<string>(currentStudent.id);
   const [questTitle, setQuestTitle] = useState<string>('Completed Metro Line 2 Landmark Check');
   const [coinAmount, setCoinAmount] = useState<number>(15);
-  const [modifyPassword, setModifyPassword] = useState<string>('');
-  const [modifyError, setModifyError] = useState<string | null>(null);
-  const [showModifyPassword, setShowModifyPassword] = useState<boolean>(false);
 
-  // Reset Coins Modal State (Password: 45679)
+  // CSV Export Dropdown State
+  const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
+
+  // Reset Coins Modal State (No password required)
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
-  const [resetPassword, setResetPassword] = useState<string>('');
-  const [resetError, setResetError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [resetSuccessBanner, setResetSuccessBanner] = useState<boolean>(false);
 
   const tableScrollRef = useRef<HTMLDivElement | null>(null);
   const currentUserRowRef = useRef<HTMLTableRowElement | null>(null);
 
   const [recentLog, setRecentLog] = useState<{ studentName: string; delta: number; quest: string; time: string }[]>([
-    { studentName: 'Latasha', delta: 15, quest: 'Xiaolongbao Local Order Challenge', time: '10 mins ago' },
-    { studentName: 'Ren ZhuoJing', delta: 20, quest: 'Maglev 431 km/h Speed Run', time: '35 mins ago' },
+    { studentName: 'Latasha Srinidthi Cliffton', delta: 15, quest: 'Xiaolongbao Local Order Challenge', time: '10 mins ago' },
+    { studentName: 'Ren ZhuoJing', delta: 20, quest: 'Maglev 300 km/h Speed Run', time: '35 mins ago' },
     { studentName: 'Chua Yu Zhe', delta: 15, quest: 'Budget Group Receipt Audit', time: '1 hr ago' },
-    { studentName: 'Marcus Lee', delta: 10, quest: 'Pudong Architecture Selfie', time: '2 hrs ago' },
+    { studentName: 'Tan Zheng Kang, Aaron', delta: 10, quest: 'Pudong Architecture Selfie', time: '2 hrs ago' },
   ]);
 
   // Sort students by coins descending
@@ -98,15 +110,17 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
     return matchesSquad && matchesSearch;
   });
 
-  const handleOpenModal = (studentId: string, mode: 'award' | 'deduct') => {
+  const handleOpenModal = (
+    studentId: string,
+    mode: 'award' | 'deduct',
+    scope: 'all' | 'Team Dragon' | 'Team Xiaolongbao' | 'Team Maglev' | 'individual' = 'individual'
+  ) => {
     setTargetStudentId(studentId);
+    setTargetScope(scope);
     setModalMode(mode);
-    setModifyPassword('');
-    setModifyError(null);
-    setShowModifyPassword(false);
     if (mode === 'award') {
       setCoinAmount(15);
-      setQuestTitle('Completed Metro Line 2 Landmark Check');
+      setQuestTitle('Completed Immersion Task');
     } else {
       setCoinAmount(10);
       setQuestTitle('Curfew Infraction (Returned past 22:30)');
@@ -116,43 +130,103 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
 
   const handleLogSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (modifyPassword.trim() !== '45679') {
-      setModifyError('Incorrect passcode. Authorization required to modify coins.');
-      return;
+    const delta = modalMode === 'award' ? Math.abs(Number(coinAmount)) : -Math.abs(Number(coinAmount));
+    
+    if (targetScope === 'individual') {
+      const student = students.find((s) => s.id === targetStudentId);
+      if (!student) return;
+
+      if (onBatchModifyCoins) {
+        onBatchModifyCoins(targetStudentId, delta, questTitle);
+      } else {
+        onModifyCoins(targetStudentId, delta, questTitle);
+      }
+
+      setRecentLog([
+        {
+          studentName: student.name.split(' ')[0],
+          delta,
+          quest: questTitle,
+          time: 'Just now',
+        },
+        ...recentLog.slice(0, 5),
+      ]);
+    } else {
+      // Batch update for all students or a specific squad
+      if (onBatchModifyCoins) {
+        onBatchModifyCoins(targetScope, delta, questTitle);
+      } else {
+        students
+          .filter((s) => targetScope === 'all' || s.squad === targetScope)
+          .forEach((s) => onModifyCoins(s.id, delta, questTitle));
+      }
+
+      const scopeLabel = targetScope === 'all' ? 'All 29 Students' : targetScope;
+      setRecentLog([
+        {
+          studentName: scopeLabel,
+          delta,
+          quest: `${questTitle} (${targetScope === 'all' ? 'Cohort' : 'Squad'})`,
+          time: 'Just now',
+        },
+        ...recentLog.slice(0, 5),
+      ]);
     }
 
-    const student = students.find((s) => s.id === targetStudentId);
-    if (!student) return;
-
-    const delta = modalMode === 'award' ? Math.abs(Number(coinAmount)) : -Math.abs(Number(coinAmount));
-    onModifyCoins(targetStudentId, delta, questTitle);
-
-    setRecentLog([
-      {
-        studentName: student.name.split(' ')[0],
-        delta,
-        quest: questTitle,
-        time: 'Just now',
-      },
-      ...recentLog.slice(0, 5),
-    ]);
     setShowLogModal(false);
-    setModifyPassword('');
-    setModifyError(null);
+  };
+
+  // Export Leaderboard CSV for All or Selected Squad
+  const handleExportCSV = (squadChoice: 'All' | 'Team Dragon' | 'Team Xiaolongbao' | 'Team Maglev') => {
+    const exportList =
+      squadChoice === 'All'
+        ? [...students].sort((a, b) => b.coins - a.coins)
+        : [...students].filter((s) => s.squad === squadChoice).sort((a, b) => b.coins - a.coins);
+
+    const headers = [
+      'Rank',
+      'Student ID',
+      'Full Name',
+      'Squad',
+      'Attendance Status',
+      'Quest Coins',
+      'Module Grade (%)',
+      'Quests Completed',
+    ];
+
+    const rows = exportList.map((st, idx) => [
+      idx + 1,
+      st.id,
+      `"${st.name.replace(/"/g, '""')}"`,
+      `"${st.squad}"`,
+      `"${st.attendanceStatus}"`,
+      st.coins,
+      ((st.coins / 100) * 5.0).toFixed(2),
+      st.questsCompleted,
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    const cleanSquadName = squadChoice.replace(/\s+/g, '_');
+    link.setAttribute(
+      'download',
+      `Quest_Shanghai_Leaderboard_${cleanSquadName}_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleConfirmReset = (e: React.FormEvent) => {
     e.preventDefault();
-    if (resetPassword.trim() === '45679') {
-      onResetAllCoins();
-      setShowResetModal(false);
-      setResetPassword('');
-      setResetError(null);
-      setResetSuccessBanner(true);
-      setTimeout(() => setResetSuccessBanner(false), 5000);
-    } else {
-      setResetError('Incorrect admin password. Authorization failed.');
-    }
+    onResetAllCoins();
+    setShowResetModal(false);
+    setResetSuccessBanner(true);
+    setTimeout(() => setResetSuccessBanner(false), 5000);
   };
 
   const handleScrollToCurrentUser = () => {
@@ -246,36 +320,91 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
           </div>
         </div>
 
-        {/* Live Quest Coin Action Card */}
-        <div className="bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-slate-950 rounded-3xl p-5 shadow-md flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider">
-              <span>Manage Student Coins</span>
-              <Flame className="w-5 h-5 text-rose-700 fill-rose-600" />
+        {/* Coin Action Card: Leader Controls or Student Status */}
+        {isLeader ? (
+          <div className="bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-slate-950 rounded-3xl p-5 shadow-md flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider">
+                <span>Leader Coin Controls</span>
+                <Flame className="w-5 h-5 text-rose-700 fill-rose-600" />
+              </div>
+              <h3 className="text-xl font-black mt-2">Award or Adjust Quest Coins</h3>
+              <p className="text-xs font-medium text-amber-950/80 mt-1">
+                Log completed immersion quests (+coins) or record discipline infractions (-coins).
+              </p>
             </div>
-            <h3 className="text-xl font-black mt-2">Award or Adjust Quest Coins</h3>
-            <p className="text-xs font-medium text-amber-950/80 mt-1">
-              Log completed immersion quests (+coins) or record discipline infractions (-coins).
-            </p>
-          </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <button
-              onClick={() => handleOpenModal(currentStudent.id, 'award')}
-              className="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-md"
-            >
-              <Plus className="w-3.5 h-3.5 text-amber-400" />
-              <span>+ Award Coins</span>
-            </button>
-            <button
-              onClick={() => handleOpenModal(currentStudent.id, 'deduct')}
-              className="py-2.5 px-3 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-md"
-            >
-              <Minus className="w-3.5 h-3.5 text-rose-400" />
-              <span>- Deduct Coins</span>
-            </button>
+            <div className="mt-4 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => handleOpenModal(currentStudent.id, 'award')}
+                  className="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-md cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5 text-amber-400" />
+                  <span>+ Award Coins</span>
+                </button>
+                <button
+                  onClick={() => handleOpenModal(currentStudent.id, 'deduct')}
+                  className="py-2.5 px-3 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-md cursor-pointer"
+                >
+                  <Minus className="w-3.5 h-3.5 text-rose-400" />
+                  <span>- Deduct Coins</span>
+                </button>
+              </div>
+              {onReturnToLogin && (
+                <button
+                  onClick={onReturnToLogin}
+                  className="w-full py-1.5 px-3 rounded-xl bg-amber-600/25 hover:bg-amber-600/40 text-slate-950 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors border border-amber-600/30 cursor-pointer"
+                >
+                  <LogOut className="w-3 h-3 text-rose-800" />
+                  <span>Return to Login / Switch User</span>
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white rounded-3xl p-5 shadow-md flex flex-col justify-between border border-slate-700/80">
+            <div>
+              <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-indigo-300">
+                <span>Your Immersion Progress</span>
+                <span className="text-xl">{currentStudent.avatar}</span>
+              </div>
+              <h3 className="text-xl font-black mt-2 text-white">{currentStudent.name}</h3>
+              <p className="text-xs text-slate-300 mt-1">
+                {currentStudent.squad} • {currentStudent.questsCompleted} quests completed
+              </p>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-slate-700/60 flex items-center justify-between gap-2 flex-wrap">
+              <div>
+                <span className="text-[11px] text-slate-400 block">Your Standing</span>
+                <span className="text-xl font-black text-amber-400">{currentStudent.coins} Coins</span>
+                <span className="text-xs text-emerald-400 font-bold ml-1.5">
+                  ({((currentStudent.coins / 100) * 5.0).toFixed(1)}% / 5.0%)
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handleScrollToCurrentUser}
+                  className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold flex items-center gap-1 shadow-sm transition-transform active:scale-95 cursor-pointer"
+                >
+                  <ArrowDownCircle className="w-3.5 h-3.5" />
+                  <span>Jump to My Rank</span>
+                </button>
+                {onReturnToLogin && (
+                  <button
+                    onClick={onReturnToLogin}
+                    className="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                    title="Return to Login Screen"
+                  >
+                    <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Return to Login</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
 
@@ -296,26 +425,88 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
             {/* Quick jump to current student */}
             <button
               onClick={handleScrollToCurrentUser}
-              className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 transition-colors"
+              className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
               title="Scroll directly to your rank row"
             >
               <ArrowDownCircle className="w-3.5 h-3.5 text-amber-600" />
               <span>Jump to My Rank</span>
             </button>
 
-            {/* Reset All Coins (Password Protected) */}
-            <button
-              onClick={() => {
-                setResetError(null);
-                setResetPassword('');
-                setShowResetModal(true);
-              }}
-              className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1.5 transition-colors"
-              title="Reset all student coins to 0 (Admin passcode required)"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
-              <span>Reset All Coins</span>
-            </button>
+            {/* Reset All Coins (No Password Required, Leader Only) */}
+            {isLeader && (
+              <button
+                onClick={() => {
+                  setShowResetModal(true);
+                }}
+                className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Reset all student coins to 0"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
+                <span>Reset All Coins</span>
+              </button>
+            )}
+
+            {/* Download CSV Dropdown with Squad Selection */}
+            <div className="relative">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                title="Download standings as CSV Excel file (Select squad or all)"
+              >
+                <Download className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Download CSV</span>
+                <span className="text-[10px] text-emerald-600 font-normal">▼</span>
+              </button>
+
+              {showExportMenu && (
+                <div className="absolute right-0 top-full mt-1.5 w-64 bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-30 animate-in fade-in duration-100 text-xs space-y-1">
+                  <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-slate-400 flex items-center justify-between">
+                    <span>Select Squad to Export:</span>
+                    <span className="text-[9px] text-emerald-700 font-mono">Excel Ready</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleExportCSV('All');
+                      setShowExportMenu(false);
+                    }}
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-emerald-50 text-slate-800 font-bold flex items-center justify-between cursor-pointer"
+                  >
+                    <span>🌟 All Squads (29 Students)</span>
+                    <span className="text-[10px] text-slate-400 font-normal">Cohort</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleExportCSV('Team Dragon');
+                      setShowExportMenu(false);
+                    }}
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-amber-50 text-amber-900 font-bold flex items-center justify-between cursor-pointer"
+                  >
+                    <span>🐉 Team Dragon (10)</span>
+                    <span className="text-[10px] text-amber-600 font-normal">CSV</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleExportCSV('Team Xiaolongbao');
+                      setShowExportMenu(false);
+                    }}
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-rose-50 text-rose-900 font-bold flex items-center justify-between cursor-pointer"
+                  >
+                    <span>🥟 Team Xiaolongbao (10)</span>
+                    <span className="text-[10px] text-rose-600 font-normal">CSV</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleExportCSV('Team Maglev');
+                      setShowExportMenu(false);
+                    }}
+                    className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-blue-50 text-blue-900 font-bold flex items-center justify-between cursor-pointer"
+                  >
+                    <span>🚅 Team Maglev (9)</span>
+                    <span className="text-[10px] text-blue-600 font-normal">CSV</span>
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Squad Filter */}
             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
@@ -359,7 +550,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                 <th className="py-3.5 px-4">Quests Done</th>
                 <th className="py-3.5 px-4">Quest Coins</th>
                 <th className="py-3.5 px-4">Module Grade %</th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
+                {isLeader && <th className="py-3.5 px-4 text-right">Actions</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
@@ -411,7 +602,6 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                               </span>
                             )}
                           </div>
-                          <span className="text-xs text-slate-500">{student.roomNumber}</span>
                         </div>
                       </div>
                     </td>
@@ -452,27 +642,29 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                       </span>
                     </td>
 
-                    {/* Actions: Add (+) or Deduct (-) */}
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => handleOpenModal(student.id, 'award')}
-                          className="px-2 py-1 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors flex items-center gap-1"
-                          title="Award coins"
-                        >
-                          <Plus className="w-3 h-3 text-emerald-700" />
-                          <span>Add</span>
-                        </button>
-                        <button
-                          onClick={() => handleOpenModal(student.id, 'deduct')}
-                          className="px-2 py-1 rounded-lg text-xs font-bold text-rose-800 bg-rose-100 hover:bg-rose-200 transition-colors flex items-center gap-1"
-                          title="Deduct coins"
-                        >
-                          <Minus className="w-3 h-3 text-rose-700" />
-                          <span>Deduct</span>
-                        </button>
-                      </div>
-                    </td>
+                    {/* Actions: Add (+) or Deduct (-) - Visible only to signed-in leaders */}
+                    {isLeader && (
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleOpenModal(student.id, 'award')}
+                            className="px-2 py-1 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 transition-colors flex items-center gap-1 cursor-pointer"
+                            title="Award coins"
+                          >
+                            <Plus className="w-3 h-3 text-emerald-700" />
+                            <span>Add</span>
+                          </button>
+                          <button
+                            onClick={() => handleOpenModal(student.id, 'deduct')}
+                            className="px-2 py-1 rounded-lg text-xs font-bold text-rose-800 bg-rose-100 hover:bg-rose-200 transition-colors flex items-center gap-1 cursor-pointer"
+                            title="Deduct coins"
+                          >
+                            <Minus className="w-3 h-3 text-rose-700" />
+                            <span>Deduct</span>
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
@@ -578,21 +770,102 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
             </div>
 
             <form onSubmit={handleLogSubmit} className="mt-4 space-y-4">
+              {/* Target Audience Scope Selector */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Select Student
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5 flex items-center justify-between">
+                  <span>Target Audience (All / Squad / Student)</span>
+                  <span className="text-[11px] font-semibold text-emerald-700">
+                    {targetScope === 'all'
+                      ? '👥 All 29 Students'
+                      : targetScope === 'Team Dragon'
+                      ? '🐉 10 Students in Team Dragon'
+                      : targetScope === 'Team Xiaolongbao'
+                      ? '🥟 10 Students in Team Xiaolongbao'
+                      : targetScope === 'Team Maglev'
+                      ? '🚅 9 Students in Team Maglev'
+                      : '👤 1 Student'}
+                  </span>
                 </label>
-                <select
-                  value={targetStudentId}
-                  onChange={(e) => setTargetStudentId(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-300 text-sm font-semibold bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  {students.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} ({s.squad}, {s.roomNumber}) — Current: {s.coins} coins
-                    </option>
-                  ))}
-                </select>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-slate-100 rounded-2xl text-xs font-bold mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setTargetScope('all')}
+                    className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                      targetScope === 'all'
+                        ? 'bg-slate-950 text-amber-300 shadow-xs font-black'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>👥 All (29)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTargetScope('Team Dragon')}
+                    className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                      targetScope === 'Team Dragon'
+                        ? 'bg-amber-500 text-slate-950 shadow-xs font-black'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>🐉 Dragon</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTargetScope('Team Xiaolongbao')}
+                    className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                      targetScope === 'Team Xiaolongbao'
+                        ? 'bg-rose-500 text-white shadow-xs font-black'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>🥟 Xiaolongbao</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTargetScope('Team Maglev')}
+                    className={`py-2 px-2 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                      targetScope === 'Team Maglev'
+                        ? 'bg-blue-600 text-white shadow-xs font-black'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>🚅 Maglev</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setTargetScope('individual')}
+                    className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                      targetScope === 'individual'
+                        ? 'bg-emerald-600 text-white shadow-xs font-black'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>👤 Single Student Selection</span>
+                  </button>
+                </div>
+
+                {targetScope === 'individual' && (
+                  <div className="mt-2 animate-in fade-in">
+                    <select
+                      value={targetStudentId}
+                      onChange={(e) => setTargetStudentId(e.target.value)}
+                      className="w-full p-2.5 rounded-xl border border-slate-300 text-sm font-semibold bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    >
+                      {students.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name} ({s.squad}) — Current: {s.coins} coins
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -644,6 +917,13 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                         className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold"
                       >
                         🤝 Buddy Care (+10)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setQuestTitle('Group Punctuality & Morning Roll Call'); setCoinAmount(5); }}
+                        className="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-semibold border border-emerald-200"
+                      >
+                        ⏰ Full Squad On-Time (+5)
                       </button>
                     </>
                   ) : (
@@ -698,7 +978,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                       key={amt}
                       type="button"
                       onClick={() => setCoinAmount(amt)}
-                      className={`flex-1 py-2 rounded-xl text-xs font-black transition-all ${
+                      className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
                         coinAmount === amt
                           ? modalMode === 'award'
                             ? 'bg-amber-500 text-slate-950 shadow-xs'
@@ -720,8 +1000,11 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                     <span className="text-emerald-700 font-extrabold">+{((coinAmount / 100) * 5.0).toFixed(2)}%</span>
                   </div>
                   <p className="text-[11px] text-emerald-700">
-                    {targetStudent.name.split(' ')[0]}'s balance will increase from <strong>{targetStudent.coins}</strong> to{' '}
-                    <strong>{Math.min(100, targetStudent.coins + coinAmount)}</strong> coins.
+                    {targetScope === 'all'
+                      ? `Will award +${coinAmount} coins to ALL 29 students across all squads!`
+                      : targetScope === 'individual'
+                      ? `${targetStudent.name.split(' ')[0]}'s balance will increase from ${targetStudent.coins} to ${Math.min(100, targetStudent.coins + coinAmount)} coins.`
+                      : `Will award +${coinAmount} coins to all ${students.filter((s) => s.squad === targetScope).length} members of ${targetScope}!`}
                   </p>
                 </div>
               ) : (
@@ -731,46 +1014,14 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                     <span className="text-rose-700 font-extrabold">-{((coinAmount / 100) * 5.0).toFixed(2)}%</span>
                   </div>
                   <p className="text-[11px] text-rose-700">
-                    {targetStudent.name.split(' ')[0]}'s balance will decrease from <strong>{targetStudent.coins}</strong> to{' '}
-                    <strong>{Math.max(0, targetStudent.coins - coinAmount)}</strong> coins (clamped at minimum 0).
+                    {targetScope === 'all'
+                      ? `Will deduct -${coinAmount} coins from ALL 29 students across all squads (minimum 0).`
+                      : targetScope === 'individual'
+                      ? `${targetStudent.name.split(' ')[0]}'s balance will decrease from ${targetStudent.coins} to ${Math.max(0, targetStudent.coins - coinAmount)} coins.`
+                      : `Will deduct -${coinAmount} coins from all ${students.filter((s) => s.squad === targetScope).length} members of ${targetScope} (minimum 0).`}
                   </p>
                 </div>
               )}
-
-              {/* Leader Passcode Authorization */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Enter Authorization Passcode
-                </label>
-                <div className="relative">
-                  <input
-                    type={showModifyPassword ? 'text' : 'password'}
-                    value={modifyPassword}
-                    onChange={(e) => {
-                      setModifyPassword(e.target.value);
-                      if (modifyError) setModifyError(null);
-                    }}
-                    placeholder="Enter passcode"
-                    className="w-full pl-3 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm font-mono tracking-widest text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowModifyPassword(!showModifyPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                  >
-                    {showModifyPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {modifyError && (
-                  <p className="text-xs font-bold text-rose-600 mt-1.5 flex items-center gap-1">
-                    <span>✕</span> {modifyError}
-                  </p>
-                )}
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Trip leader authorization required to apply coin adjustments.
-                </p>
-              </div>
 
               <div className="pt-2 flex gap-3">
                 <button
@@ -785,11 +1036,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowLogModal(false);
-                    setModifyPassword('');
-                    setModifyError(null);
-                  }}
+                  onClick={() => setShowLogModal(false)}
                   className="py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm"
                 >
                   Cancel
@@ -815,10 +1062,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                 </div>
               </div>
               <button
-                onClick={() => {
-                  setShowResetModal(false);
-                  setResetError(null);
-                }}
+                onClick={() => setShowResetModal(false)}
                 className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-sm"
               >
                 ✕
@@ -836,41 +1080,6 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Enter Admin Passcode
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={resetPassword}
-                    onChange={(e) => {
-                      setResetPassword(e.target.value);
-                      if (resetError) setResetError(null);
-                    }}
-                    placeholder="Enter admin passcode"
-                    autoFocus
-                    className="w-full pl-3 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm font-mono tracking-widest text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {resetError && (
-                  <p className="text-xs font-bold text-rose-600 mt-1.5 flex items-center gap-1">
-                    <span>✕</span> {resetError}
-                  </p>
-                )}
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Authorized trip leaders only. Passcode protection prevents accidental resets.
-                </p>
-              </div>
-
               <div className="pt-2 flex gap-3">
                 <button
                   type="submit"
@@ -881,10 +1090,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowResetModal(false);
-                    setResetError(null);
-                  }}
+                  onClick={() => setShowResetModal(false)}
                   className="py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm"
                 >
                   Cancel

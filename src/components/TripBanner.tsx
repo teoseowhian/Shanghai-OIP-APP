@@ -4,9 +4,10 @@ import { PhoneCall, MapPin, Copy, Check, ShieldAlert, Sparkles, Navigation, Lugg
 interface TripBannerProps {
   onOpenPackingList?: () => void;
   onOpenDeliverables?: () => void;
+  onReturnToLogin?: () => void;
 }
 
-export const TripBanner: React.FC<TripBannerProps> = ({ onOpenPackingList, onOpenDeliverables }) => {
+export const TripBanner: React.FC<TripBannerProps> = ({ onOpenPackingList, onOpenDeliverables, onReturnToLogin }) => {
   const [showTaxiModal, setShowTaxiModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -83,12 +84,24 @@ export const TripBanner: React.FC<TripBannerProps> = ({ onOpenPackingList, onOpe
             {/* Quick Action: Taxi Card */}
             <button
               onClick={() => setShowTaxiModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-amber-400 hover:bg-amber-500 text-slate-950 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-amber-400 hover:bg-amber-500 text-slate-950 transition-colors shadow-xs cursor-pointer"
               title="Show Chinese Address to Taxi Driver"
             >
               <span>🚕</span>
               <span>Taxi Address Card</span>
             </button>
+
+            {/* Quick Action: Return to Login */}
+            {onReturnToLogin && (
+              <button
+                onClick={onReturnToLogin}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-white hover:bg-rose-50 text-rose-700 border border-rose-300 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                title="Return to Student Login Screen"
+              >
+                <span>🔑</span>
+                <span>Return to Login</span>
+              </button>
+            )}
           </div>
 
         </div>
