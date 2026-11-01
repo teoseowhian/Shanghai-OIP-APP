@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Clock, Train, Check, Shirt, User, Sparkles, Navigation, Luggage, Plane, Users } from 'lucide-react';
+import { Calendar, MapPin, Clock, Train, Check, Shirt, User, Sparkles, Navigation, Luggage, Plane, Users, Info } from 'lucide-react';
 import { ITINERARY, ItineraryDay } from '../data/tripData';
 
 interface ItineraryViewProps {
@@ -10,13 +10,12 @@ interface ItineraryViewProps {
 export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, onOpenPackingList }) => {
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [checkedInEvents, setCheckedInEvents] = useState<Record<string, boolean>>({
-    '1-Arrive Shanghai Pudong Terminal 1 (+5 Coins check-in) — immigration & baggage': true,
-    '1-Maglev Experience to Longyang Road (+20 Coins) — PVG Maglev Station; connect Metro Line 2 -> Line 1 to Yanchang Rd': true,
+    '1-Arrive Shanghai Pudong (PVG) Terminal 1 — arrival of NP staff and students': true,
   });
 
   const selectedDay = ITINERARY.find((d) => d.dayNumber === selectedDayNumber) || ITINERARY[0];
 
-  const handleCheckIn = (dayNum: number, eventTitle: string, coins: number = 10) => {
+  const handleCheckIn = (dayNum: number, eventTitle: string, coins: number = 5) => {
     const key = `${dayNum}-${eventTitle}`;
     if (checkedInEvents[key]) return;
 
@@ -157,10 +156,18 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, on
                 </div>
               </div>
 
-              {/* Group Meeting Time Pill */}
-              <div className="bg-amber-400 text-slate-950 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-md font-bold text-xs self-start sm:self-center">
-                <Users className="w-4 h-4 text-slate-950 shrink-0" />
-                <span>Group Meeting: <strong className="font-black text-slate-950">{selectedDay.flightInfo.groupMeetingTime}</strong></span>
+              {/* Group Meeting Time & Dress Code Pills */}
+              <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+                <div className="bg-amber-400 text-slate-950 px-3.5 py-2 rounded-2xl flex items-center gap-1.5 shadow-md font-bold text-xs">
+                  <Users className="w-4 h-4 text-slate-950 shrink-0" />
+                  <span>Meeting: <strong className="font-black text-slate-950">{selectedDay.flightInfo.groupMeetingTime}</strong></span>
+                </div>
+                {selectedDay.flightInfo.dressCode && (
+                  <div className="bg-emerald-400 text-slate-950 px-3.5 py-2 rounded-2xl flex items-center gap-1.5 shadow-md font-bold text-xs">
+                    <Shirt className="w-4 h-4 text-slate-950 shrink-0" />
+                    <span>Dress Code: <strong className="font-black text-slate-950">{selectedDay.flightInfo.dressCode}</strong></span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -260,20 +267,20 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, on
                       {/* Check-in / Coin reward */}
                       {item.coinsAvailable && (
                         <div className="flex items-center gap-2 self-end sm:self-center">
-                          <span className="text-xs font-black text-amber-600 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
-                            +{item.coinsAvailable} Coins
+                          <span className="text-xs font-black text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-lg border border-amber-300 shadow-2xs">
+                            {item.checkInType ? item.checkInType : `+${item.coinsAvailable} Coins`}
                           </span>
                           <button
                             onClick={() => handleCheckIn(selectedDay.dayNumber, item.event, item.coinsAvailable)}
                             disabled={isChecked}
-                            className={`px-3 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95 ${
                               isChecked
-                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-default'
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-default opacity-90'
                                 : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
                             }`}
                           >
                             <Check className="w-3.5 h-3.5" />
-                            <span>{isChecked ? 'Checked In' : 'Check-in'}</span>
+                            <span>{isChecked ? 'Checked In' : 'Record Check-in'}</span>
                           </button>
                         </div>
                       )}
@@ -291,6 +298,13 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, on
                         </span>
                       )}
                     </div>
+
+                    {item.note && (
+                      <div className="mt-2 text-xs text-amber-950 bg-amber-50/90 border border-amber-200/80 px-3 py-1.5 rounded-xl font-medium flex items-center gap-2">
+                        <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span>{item.note}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               );

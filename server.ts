@@ -296,7 +296,7 @@ TRIP & PROGRAMME DETAILS:
 - Gamification & Grading: 100 Quest Coins = 5.0% Module Grade! Students submit quest proofs (photos, TikTok, Instagram, LinkedIn links). Claims are reviewed and approved by student leaders in the Leader Desk.
 - Daily Phrase Challenge: Complete 3 phrases daily in the "🗣️ Phrases" tab for +5 Coins (strictly capped at 1 claim per day on server!).
 
-CONFIRMED VISITS (DAYS 2 TO 6 - NO Zhangjiang AI Park, NO Fudan/Guanghua Towers):
+CONFIRMED VISITS (DAYS 2 TO 6 - OFFICIAL SCHEDULE):
 1. Shanghai Urban Planning Exhibition Center (SUPEC - 上海城市规划展示馆): Shanghai 2035 master plan, 3D scale model, smart mobility, sustainable urban density.
 2. ebm-papst China Factory (依必安派特): Precision EC motor engineering, fan aerodynamics, cleanroom air systems, energy-efficient ventilation.
 3. Shanghai University (SHU - 上海大学): Baoshan Campus. Taiji (太极) masterclass, traditional Chinese Calligraphy (书法) workshop, local etiquette & cross-cultural student dialogue.

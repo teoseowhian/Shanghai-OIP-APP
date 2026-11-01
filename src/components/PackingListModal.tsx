@@ -43,9 +43,9 @@ const DEFAULT_PACKING_ITEMS: PackingItem[] = [
     id: 'c2',
     category: 'clothing',
     categoryLabel: 'Clothing (Layering)',
-    name: 'Tops & Smart-Casual Collared Shirts',
+    name: 'Ngee Ann Polytechnic Tee-Shirt & Smart-Casual Tops',
     quantity: '7–8 items',
-    detail: 'Mix of long-sleeve t-shirts and button-downs. Must bring at least 1 or 2 smart-casual collared shirts or blouses for company/factory site visits and professional interactions.',
+    detail: 'MANDATORY for Day 1: Ngee Ann Polytechnic Tee-Shirt for Changi Airport roll call, group check-in (8:10 am), and official cohort photo (8:40 am)! Plus mix of smart-casual collared shirts/blouses for company/factory site visits.',
     requiredForPT: true,
   },
   {
@@ -462,7 +462,7 @@ export const PackingListModal: React.FC<PackingListModalProps> = ({ isOpen, onCl
               <span>Pro Luggage Tip: Leave Extra Space!</span>
             </div>
             <p className="leading-relaxed text-amber-900/90">
-              Shanghai is a world-class shopping and tech hub (Nanjing Road, Tianzifang, Xintiandi, Miniso flagship stores). Leave 20–30% empty capacity in your suitcase for souvenirs, snacks (White Rabbit candies, tea, local treats), and gifts!
+              Shanghai is a world-class shopping and cultural hub (Nanjing Road, local markets, Miniso flagship stores). Leave 20–30% empty capacity in your suitcase for souvenirs, snacks (White Rabbit candies, tea, local treats), and gifts!
             </p>
             <p className="text-[11px] text-amber-800 italic">
               * Note: These are recommendations tailored for student comfort and official site visit requirements, not rigid constraints.

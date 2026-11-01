@@ -440,7 +440,7 @@ export const DeliverablesModal: React.FC<DeliverablesModalProps> = ({
             <textarea
               value={reflectionDraft}
               onChange={(e) => handleReflectionChange(e.target.value)}
-              placeholder="Draft your trip reflection here (e.g. key takeaways from company visits, robotics hubs, university exchange at Fudan/Jiao Tong, Shanghai cultural immersion, and teamwork lessons)..."
+              placeholder="Draft your trip reflection here (e.g. key takeaways from company visits, university exchange at Shanghai University / SJTU, Shanghai cultural immersion, and teamwork lessons)..."
               rows={4}
               className="w-full p-3 rounded-xl border border-slate-300 text-xs text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-sans leading-relaxed"
             />

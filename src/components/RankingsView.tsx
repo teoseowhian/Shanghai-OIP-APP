@@ -48,20 +48,26 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
   const [selectedSquad, setSelectedSquad] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   
-  // Coin Modification Modal State (No passcode required)
+  // Coin Modification Modal State (Passcode protected: 45679)
   const [showLogModal, setShowLogModal] = useState<boolean>(false);
   const [modalMode, setModalMode] = useState<'award' | 'deduct'>('award');
   const [targetScope, setTargetScope] = useState<'all' | 'Team Dragon' | 'Team Xiaolongbao' | 'Team Maglev' | 'individual'>('individual');
   const [targetStudentId, setTargetStudentId] = useState<string>(currentStudent.id);
   const [questTitle, setQuestTitle] = useState<string>('Completed Metro Line 2 Landmark Check');
   const [coinAmount, setCoinAmount] = useState<number>(15);
+  const [modifyPassword, setModifyPassword] = useState<string>('');
+  const [modifyError, setModifyError] = useState<string | null>(null);
+  const [showModifyPassword, setShowModifyPassword] = useState<boolean>(false);
 
   // CSV Export Dropdown State
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
 
-  // Reset Coins Modal State (No password required)
+  // Reset Coins Modal State (Passcode protected: 45679)
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const [resetSuccessBanner, setResetSuccessBanner] = useState<boolean>(false);
+  const [resetPassword, setResetPassword] = useState<string>('');
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [showResetPassword, setShowResetPassword] = useState<boolean>(false);
 
   const tableScrollRef = useRef<HTMLDivElement | null>(null);
   const currentUserRowRef = useRef<HTMLTableRowElement | null>(null);
@@ -125,11 +131,20 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
       setCoinAmount(10);
       setQuestTitle('Curfew Infraction (Returned past 22:30)');
     }
+    setModifyPassword('');
+    setModifyError(null);
+    setShowModifyPassword(false);
     setShowLogModal(true);
   };
 
   const handleLogSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (modifyPassword.trim() !== '45679') {
+      setModifyError('Incorrect authorization passcode. Please enter the valid leader passcode.');
+      return;
+    }
+    setModifyError(null);
+
     const delta = modalMode === 'award' ? Math.abs(Number(coinAmount)) : -Math.abs(Number(coinAmount));
     
     if (targetScope === 'individual') {
@@ -173,6 +188,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
       ]);
     }
 
+    setModifyPassword('');
     setShowLogModal(false);
   };
 
@@ -223,7 +239,13 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
 
   const handleConfirmReset = (e: React.FormEvent) => {
     e.preventDefault();
+    if (resetPassword.trim() !== '45679') {
+      setResetError('Incorrect authorization passcode. Please enter the valid admin passcode.');
+      return;
+    }
+    setResetError(null);
     onResetAllCoins();
+    setResetPassword('');
     setShowResetModal(false);
     setResetSuccessBanner(true);
     setTimeout(() => setResetSuccessBanner(false), 5000);
@@ -432,10 +454,13 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
               <span>Jump to My Rank</span>
             </button>
 
-            {/* Reset All Coins (No Password Required, Leader Only) */}
+            {/* Reset All Coins (Passcode Protected: 45679, Leader Only) */}
             {isLeader && (
               <button
                 onClick={() => {
+                  setResetPassword('');
+                  setResetError(null);
+                  setShowResetPassword(false);
                   setShowResetModal(true);
                 }}
                 className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -1023,6 +1048,46 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                 </div>
               )}
 
+              {/* Leader Authorization Passcode Field */}
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <label className="block text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Leader Authorization Passcode</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">Required</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showModifyPassword ? 'text' : 'password'}
+                    value={modifyPassword}
+                    onChange={(e) => {
+                      setModifyPassword(e.target.value);
+                      if (modifyError) setModifyError(null);
+                    }}
+                    placeholder="Enter leader passcode"
+                    className={`w-full p-2.5 pr-10 rounded-xl border text-sm font-mono tracking-wider ${
+                      modifyError ? 'border-rose-400 bg-rose-50/50' : 'border-slate-300 bg-white'
+                    } text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowModifyPassword(!showModifyPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    tabIndex={-1}
+                  >
+                    {showModifyPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {modifyError && (
+                  <p className="text-xs text-rose-600 font-bold flex items-center gap-1 pt-0.5 animate-in fade-in">
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{modifyError}</span>
+                  </p>
+                )}
+              </div>
+
               <div className="pt-2 flex gap-3">
                 <button
                   type="submit"
@@ -1078,6 +1143,46 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                     This will clear all quest coin balances for all 29 students back to <strong>0 coins</strong> and reset their module assessment component to <strong>0.0%</strong>.
                   </p>
                 </div>
+              </div>
+
+              {/* Admin Authorization Passcode Input */}
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <label className="block text-xs font-bold text-slate-800 uppercase flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Admin Authorization Passcode</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">Required</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showResetPassword ? 'text' : 'password'}
+                    value={resetPassword}
+                    onChange={(e) => {
+                      setResetPassword(e.target.value);
+                      if (resetError) setResetError(null);
+                    }}
+                    placeholder="Enter admin passcode"
+                    className={`w-full p-2.5 pr-10 rounded-xl border text-sm font-mono tracking-wider ${
+                      resetError ? 'border-rose-400 bg-rose-50/50' : 'border-slate-300 bg-white'
+                    } text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowResetPassword(!showResetPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    tabIndex={-1}
+                  >
+                    {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {resetError && (
+                  <p className="text-xs text-rose-600 font-bold flex items-center gap-1 pt-0.5 animate-in fade-in">
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{resetError}</span>
+                  </p>
+                )}
               </div>
 
               <div className="pt-2 flex gap-3">

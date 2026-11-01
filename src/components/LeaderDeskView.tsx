@@ -104,7 +104,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
   // Budget expense log
   const [expenses, setExpenses] = useState([
     { item: 'Day 1 Welcome Shengjianbao Dinner (Group 2)', paidBy: 'Chua Yu Zhe (Treasurer Fund)', amountRmb: 1440, pax: 24, status: 'Reimbursed' },
-    { item: 'Charter Bus Day 3 (Fudan University Return)', paidBy: 'Faculty Module Grant', amountRmb: 2200, pax: 24, status: 'Paid by School' },
+    { item: 'SHU Transport Day 3 (SJTU & ebm-papst Industry Visits)', paidBy: 'Faculty Module Grant', amountRmb: 2200, pax: 24, status: 'Paid by School' },
     { item: 'Huangpu River Cruise Group Tickets', paidBy: 'Chua Yu Zhe (OIP Reserve)', amountRmb: 2880, pax: 24, status: 'Booked & Confirmed' },
   ]);
 
