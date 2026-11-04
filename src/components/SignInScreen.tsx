@@ -159,7 +159,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({ students, onSignIn }
       <div className="text-center mt-6 text-xs text-slate-400 max-w-sm">
         <p>Shanghai Immersion 2026 • 100 Quest Coins = 5.0% Module Grade</p>
         <p className="mt-1 text-[11px] text-slate-500">
-          Basecamp: Homeinn Plus Hotel (Yanchang Middle Road, Jing'An District)
+          Basecamp: 809 Guangzhong Rd, Jing'An District, Shanghai 200072 (上海市静安区广中路809号)
         </p>
       </div>
     </div>

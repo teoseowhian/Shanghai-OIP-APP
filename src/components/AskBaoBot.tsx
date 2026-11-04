@@ -16,7 +16,7 @@ export const AskBaoBot: React.FC = () => {
     {
       id: 'm1',
       sender: 'bao',
-      text: "🐲 Nong Hao (侬好)! I'm Bao (小龙宝), your Shanghai Immersion AI Trip Bot! Staying with DE Group 2 at Homeinn Plus Hotel (Yanchang Middle Road)? Ask me anything about Metro Line 1, delicious dumplings, quest coin secrets, or student leaders Latasha, Ren ZhuoJing (Assis) & Chua Yu Zhe!",
+      text: "🐲 Nong Hao (侬好)! I'm Bao (小龙宝), your Shanghai Immersion AI Trip Bot! Staying with DE Group 2 at 809 Guangzhong Road, Jing'An District (上海市静安区广中路809号)? Ask me anything about Metro Line 1, delicious dumplings, quest coin secrets, or student leaders Latasha, Ren ZhuoJing (Assis) & Chua Yu Zhe!",
       timestamp: 'Just now',
     },
   ]);
@@ -71,7 +71,7 @@ export const AskBaoBot: React.FC = () => {
       const fallbackReply: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'bao',
-        text: "🐲 Bao says: You are near Yanchang Road Station (Line 1)! Take Metro Line 1 directly to People's Square or transfer to East Nanjing Road for The Bund. Remember: 100 Coins = 5.0% Module Grade!",
+        text: "🐲 Bao says: You are based at 809 Guangzhong Road (near Metro Line 1 Circus World / Yanchang Rd stations)! Take Metro Line 1 directly to People's Square or transfer to East Nanjing Road for The Bund. Remember: 100 Coins = 5.0% Module Grade!",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, fallbackReply]);
@@ -83,8 +83,8 @@ export const AskBaoBot: React.FC = () => {
   const quickPrompts = [
     { label: '🎓 1 LU Deliverables', text: 'What are the required deliverables for 1 LU PLP-Global Readiness and the NYC AEP grant under Brightspace DE_OIP (Shanghai)_NOV26?' },
     { label: '🧳 What to pack in Nov?', text: 'What should I pack for our 7-day Shanghai immersion in November? What clothes and PT gear do I need?' },
-    { label: '🚇 Metro to The Bund', text: 'How do I take the Metro from Homeinn Plus Hotel (Yanchang Middle Road) to The Bund?' },
-    { label: '🥟 Food Spots Nearby', text: 'What are the top Xiaolongbao and Shengjianbao places within walking distance of Homeinn Plus Hotel on Yanchang Middle Road?' },
+    { label: '🚇 Metro to The Bund', text: 'How do I take the Metro from our hotel at 809 Guangzhong Road to The Bund?' },
+    { label: '🥟 Food Spots Nearby', text: 'What are the top Xiaolongbao and Shengjianbao places within walking distance of our hotel at 809 Guangzhong Road?' },
     { label: '🗣️ Shanghainese Phrases', text: 'Teach me 3 essential Shanghainese phrases to complete the slang quest!' },
     { label: '🚨 Emergency Contacts', text: 'Who do I call in an emergency? Show Latasha, Ren ZhuoJing, and Chua Yu Zhe\'s contacts.' },
   ];

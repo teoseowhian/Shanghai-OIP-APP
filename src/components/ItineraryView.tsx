@@ -34,7 +34,7 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, on
           </span>
           <h2 className="text-2xl sm:text-3xl font-black mt-2">7-Day Immersion Itinerary</h2>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
-            Staying at <strong>Homeinn Plus Hotel (Yanchang Middle Rd, Jing'An)</strong>. Check into itinerary checkpoints to earn attendance coins and track daily meeting times!
+            Staying at <strong>809 Guangzhong Rd, Jing'An (上海市静安区广中路809号)</strong>. Check into itinerary checkpoints to earn attendance coins and track daily meeting times!
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, on
           </div>
           <div className="flex items-center justify-between gap-4 text-indigo-200">
             <span>Base Line:</span>
-            <span className="font-bold text-amber-300">Metro Line 1 (Yanchang Rd)</span>
+            <span className="font-bold text-amber-300">Metro Line 1 (Guangzhong / Yanchang)</span>
           </div>
           {onOpenPackingList && (
             <button

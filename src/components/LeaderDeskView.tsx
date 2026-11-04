@@ -198,7 +198,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
             }`}
           >
             <Building className="w-3.5 h-3.5" />
-            <span>Homeinn Rooms</span>
+            <span>Hotel Rooms</span>
           </button>
 
           <button
@@ -543,10 +543,10 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
                   Official Accommodation
                 </span>
                 <h3 className="text-xl font-black text-slate-900 mt-1">
-                  Homeinn Plus Hotel • 如家精选酒店 (上海火车站延长路地铁站店)
+                  Basecamp Hotel • 809 Guangzhong Rd (上海市静安区广中路809号)
                 </h3>
                 <p className="text-xs text-slate-600 mt-1">
-                  Yanchang Middle Road 302, Jing An District, Shanghai, China 200070 | 中国上海市静安区延长中路302号 (Postal code: 200070)
+                  809 Guangzhong Rd, Jing An Qu, Shang Hai Shi, China, 200072 | 上海市静安区广中路809号 邮政编码: 200072
                 </p>
               </div>
 
@@ -561,11 +561,11 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 text-xs">
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <span className="font-bold text-slate-900 block">🚇 Nearest Metro</span>
-                <p className="text-slate-600 mt-0.5">Yanchang Road Station (Line 1, 延长路站) - 5 min walk / Near Shanghai Railway Station</p>
+                <p className="text-slate-600 mt-0.5">Guangzhong Road (Near Metro Line 1 Shanghai Circus World / Yanchang Rd stations)</p>
               </div>
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <span className="font-bold text-slate-900 block">📶 High-Speed WiFi</span>
-                <p className="text-slate-600 mt-0.5">SSID: <code className="font-bold">Homeinn_Plus_Guest</code> (Room # + Last 4 digits of passport)</p>
+                <p className="text-slate-600 mt-0.5">SSID: <code className="font-bold">Hotel_Guest_WiFi</code> (Room # + Last 4 digits of passport)</p>
               </div>
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <span className="font-bold text-slate-900 block">🍳 Breakfast Times</span>
@@ -579,7 +579,7 @@ export const LeaderDeskView: React.FC<LeaderDeskViewProps> = ({
             <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
               <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
                 <Building className="w-4 h-4 text-emerald-600" />
-                Official Accommodation Allocation (Homeinn Plus • Rooms 1–15 & Staff)
+                Official Accommodation Allocation (809 Guangzhong Rd • Rooms 1–15 & Staff)
               </h4>
               <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-xl">
                 {students.length} Students (14 Twin + 1 Single) • 3 Groups

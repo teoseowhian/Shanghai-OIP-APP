@@ -288,7 +288,7 @@ YOUR PERSONALITY & TONE (CRITICAL INSTRUCTION):
 TRIP & PROGRAMME DETAILS:
 - Group: Shanghai Immersion (DE Group 2)
 - Dates: 8 to 14 November 2026 (7 Days)
-- Hotel Base: Homeinn Plus Hotel (Address: Yanchang Middle Road 302, Jing'An District, Shanghai, China 200070 | 如家精选酒店 上海火车站延长路地铁站店, near Metro Line 1 Yanchang Road Station).
+- Hotel Base: 809 Guangzhong Rd, Jing An Qu, Shang Hai Shi, China, 200072 (上海市静安区广中路809号 邮政编码: 200072), near Metro Line 1 Shanghai Circus World & Yanchang Road stations.
 - Student Leaders:
   - Class Rep: Latasha (Roll-call, liaison)
   - Assis: Ren ZhuoJing (Directions, translation, local logistics)
@@ -323,7 +323,7 @@ app.post('/api/chat', async (req, res) => {
     if (!process.env.GEMINI_API_KEY) {
       // Intelligent fallback when API key is not yet set in environment
       return res.json({
-        reply: `🐲 Bao says: "Walao eh! Ni hao (你好)! Welcome to Quest Shanghai OIP 2026! Don't kancheong lah! Remember ah: 100 Coins = 5.0% Module Grade! Latasha, Ren ZhuoJing, and Chua Yu Zhe are watching the Leader Desk. Need help with Metro Line 1 near Homeinn Plus Hotel or craving hot Shengjianbao (生煎包)? Just ask me lor, steady steady!"`,
+        reply: `🐲 Bao says: "Walao eh! Ni hao (你好)! Welcome to Quest Shanghai OIP 2026! Don't kancheong lah! Remember ah: 100 Coins = 5.0% Module Grade! Latasha, Ren ZhuoJing, and Chua Yu Zhe are watching the Leader Desk. Need help with Metro Line 1 near our hotel at 809 Guangzhong Road or craving hot Shengjianbao (生煎包)? Just ask me lor, steady steady!"`,
         isFallback: true,
       });
     }
@@ -344,14 +344,14 @@ app.post('/api/chat', async (req, res) => {
     console.warn('Gemini API notice:', err?.message || err);
     const msg = (req.body?.message || '').toLowerCase();
     let smartTip =
-      "🐲 Bao says: Aiyoh, don't kancheong lah! Remember for DE Group 2, Homeinn Plus Hotel is at Yanchang Middle Road 302 (延长中路302号), right near Metro Line 1 Yanchang Road Station. Keep collecting coins for your 5.0% grade, steady pom pi pi!";
+      "🐲 Bao says: Aiyoh, don't kancheong lah! Remember for DE Group 2, our basecamp hotel is at 809 Guangzhong Road (上海市静安区广中路809号 邮政编码: 200072), right near Metro Line 1 Shanghai Circus World / Yanchang Road stations. Keep collecting coins for your 5.0% grade, steady pom pi pi!";
 
     if (msg.includes('bund') || msg.includes('line 2') || msg.includes('metro') || msg.includes('how do i get')) {
       smartTip =
-        "🐲 Bao says: Go The Bund is it? Sibei easy one lah! From Homeinn Plus Hotel, walk to Yanchang Road Station (延长路站 - Line 1), take Southbound train to People's Square (人民广场 - Rénmín Guǎngchǎng). Transfer to Line 2 for just 1 stop to East Nanjing Road (南京东路 - Nánjīng Dōng Lù)! Walk 5 mins east along the promenade and boom — The Bund (外滩 - Wàitān)! At night the skyline is sibei shiok!";
+        "🐲 Bao says: Go The Bund is it? Sibei easy one lah! From our hotel at 809 Guangzhong Road, take Metro Line 1 south to People's Square (人民广场 - Rénmín Guǎngchǎng). Transfer to Line 2 for just 1 stop to East Nanjing Road (南京东路 - Nánjīng Dōng Lù)! Walk 5 mins east along the promenade and boom — The Bund (外滩 - Wàitān)! At night the skyline is sibei shiok!";
     } else if (msg.includes('food') || msg.includes('dumpling') || msg.includes('xiaolongbao') || msg.includes('eat')) {
       smartTip =
-        "🐲 Bao says: Wah hungry already ah? Chi bao le ma (吃饱了吗)? Near our hotel along Yanchang Middle Road, go try crispy Shengjianbao (生煎包 - Shēngjiānbāo) with hot soup inside! Or go Daning Plaza for authentic Xiaolongbao (小笼包 - Xiǎolóngbāo). Remember dip black vinegar and ginger, and say 'Xie xie nong (谢谢侬)' to the aunty lah!";
+        "🐲 Bao says: Wah hungry already ah? Chi bao le ma (吃饱了吗)? Near our hotel along Guangzhong Road and Daning, go try crispy Shengjianbao (生煎包 - Shēngjiānbāo) with hot soup inside! Or go Daning Plaza for authentic Xiaolongbao (小笼包 - Xiǎolóngbāo). Remember dip black vinegar and ginger, and say 'Xie xie nong (谢谢侬)' to the aunty lah!";
     } else if (msg.includes('visit') || msg.includes('programme') || msg.includes('itinerary') || msg.includes('disney') || msg.includes('shu') || msg.includes('sjtu') || msg.includes('ebm')) {
       smartTip =
         "🐲 Bao says: Steady! Our 5 confirmed technical & cultural visits are: 1) Shanghai Urban Planning Exhibition Center (SUPEC - 上海2035规划), 2) ebm-papst precision fan & EC motor factory, 3) Shanghai University (SHU - 太极 Taiji & 书法 Calligraphy), 4) SJTU Building Lab (refrigeration & green energy), and 5) Shanghai Disney Resort (ride safety & crowd logistics)! Don't forget your LinkedIn Post assignment on 2 of these visits by 7th Nov!";

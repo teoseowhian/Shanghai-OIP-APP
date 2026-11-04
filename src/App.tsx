@@ -633,7 +633,7 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
         <p>
-          Quest Shanghai • Overseas Immersion Programme (OIP 2026) • DE Group 2 Basecamp: Homeinn Plus Hotel (Yanchang Middle Road, Jing'An District)
+          Quest Shanghai • Overseas Immersion Programme (OIP 2026) • DE Group 2 Basecamp: 809 Guangzhong Rd, Jing'An District, Shanghai 200072 (上海市静安区广中路809号)
         </p>
       </footer>
 

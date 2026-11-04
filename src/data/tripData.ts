@@ -758,7 +758,7 @@ export const ITINERARY: ItineraryDay[] = [
       'Group Check-in 08:10 & Photo 08:40',
       'China Eastern MU546 to PVG Terminal 1',
       'SHU-CIE Airport Bus Transfer',
-      'Homeinn Plus Hotel Check-in',
+      'Hotel Check-in (809 Guangzhong Rd)',
     ],
     flightInfo: {
       airline: 'China Eastern Airlines',
@@ -772,7 +772,7 @@ export const ITINERARY: ItineraryDay[] = [
       groupMeetingTime: '08:00 am',
       meetingLocation: 'Changi Airport Terminal 3 (China Eastern check-in counter)',
       dressCode: 'Ngee Ann Polytechnic Tee-Shirt',
-      notes: 'Meet at Changi Airport Dress Code: Ngee Ann Polytechnic Tee-Shirt. Group roll call with Latasha. Group Check-in at 8:10 am; Group Photo at 8:40 am. Direct flight MU546. After arrival, SHU-CIE bus transfer from PVG Terminal 1 to hotel.',
+      notes: 'Meet at Changi Airport Dress Code: Ngee Ann Polytechnic Tee-Shirt. Group roll call with Latasha. Group Check-in at 8:10 am; Group Photo at 8:40 am. Direct flight MU546. After arrival, SHU-CIE bus transfer from PVG Terminal 1 to hotel (809 Guangzhong Rd).',
     },
     schedule: [
       {
@@ -806,12 +806,12 @@ export const ITINERARY: ItineraryDay[] = [
       {
         time: 'Time TBC',
         event: 'After arrival: SHU-CIE bus from airport to hotel',
-        location: 'PVG Terminal 1 Bus Bay to Homeinn Plus Hotel',
+        location: 'PVG Terminal 1 Bus Bay to Hotel (809 Guangzhong Rd, Jing\'An)',
       },
       {
         time: 'Time TBC',
-        event: "Check-in: Homeinn Plus Hotel, Yanchang Middle Road 302, Jing'An District, Shanghai 200070",
-        location: "Homeinn Plus Hotel (Yanchang Middle Road 302, Jing'An District)",
+        event: "Check-in: Hotel at 809 Guangzhong Rd, Jing An Qu, Shang Hai Shi, China, 200072 (上海市静安区广中路809号 邮政编码: 200072)",
+        location: "809 Guangzhong Rd, Jing An Qu, Shang Hai Shi (上海市静安区广中路809号)",
       },
     ],
   },
@@ -973,7 +973,7 @@ export const ITINERARY: ItineraryDay[] = [
     dressCode: 'Comfortable travel wear for flight',
     leadInCharge: 'Latasha (Class Rep) & Chua Yu Zhe (Treasurer)',
     highlights: [
-      'Homeinn Plus Hotel Check-out',
+      'Hotel Check-out (809 Guangzhong Rd)',
       'SHU-CIE Transport to PVG Terminal 1',
       'Depart PVG Terminal 1 (China Eastern MU565)',
       'Arrive Singapore Changi',
@@ -988,14 +988,14 @@ export const ITINERARY: ItineraryDay[] = [
       arrivalTerminal: 'Terminal 3',
       arrivalTime: 'approx. 19:50 (local time)',
       groupMeetingTime: 'Hotel departure: Time TBC (SHU-CIE transport)',
-      meetingLocation: 'Homeinn Plus Hotel Lobby & PVG Terminal 1 China Eastern Counter',
-      notes: 'Check-out, then SHU-CIE transport from hotel to airport (departure time from hotel: Time TBC). Strict roll call with Latasha & Chua Yu Zhe.',
+      meetingLocation: 'Hotel Lobby (809 Guangzhong Rd) & PVG Terminal 1 China Eastern Counter',
+      notes: 'Check-out, then SHU-CIE transport from hotel (809 Guangzhong Rd) to airport (departure time from hotel: Time TBC). Strict roll call with Latasha & Chua Yu Zhe.',
     },
     schedule: [
       {
         time: 'Time TBC',
         event: 'Check-out, then SHU-CIE transport from hotel to airport (departure time from hotel: Time TBC)',
-        location: 'Homeinn Plus Hotel to PVG Terminal 1',
+        location: 'Hotel (809 Guangzhong Rd, Jing\'An) to PVG Terminal 1',
         note: 'Transport: SHU-CIE.',
       },
       {
@@ -1046,7 +1046,7 @@ export const INITIAL_ANNOUNCEMENTS: Announcement[] = [
     role: 'Assis',
     timestamp: 'Yesterday at 19:40',
     title: 'Metro Line 1 Tip & Hotel Address Card',
-    content: 'If anyone gets separated, take Metro Line 1 back to Yanchang Road station (延长路站). Show the taxi card saved in the Leader Desk or header to any cab driver.',
+    content: 'If anyone gets separated, take Metro Line 1 back to Guangzhong Road / Yanchang area. Show the taxi card saved in the Leader Desk or header (809 Guangzhong Rd) to any cab driver.',
     priority: 'normal',
   },
 ];

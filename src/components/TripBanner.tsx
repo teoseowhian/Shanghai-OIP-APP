@@ -11,8 +11,8 @@ export const TripBanner: React.FC<TripBannerProps> = ({ onOpenPackingList, onOpe
   const [showTaxiModal, setShowTaxiModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const hotelChineseAddress = "中国上海市静安区延长中路302号 如家精选酒店 (上海火车站延长路地铁站店) (Postal code: 200070)";
-  const hotelPinyin = "Zhōngguó Shànghǎi Shì Jìng'ān Qū Yáncháng Zhōng Lù 302 Hào - Rújiā Jīngxuǎn Jiǔdiàn";
+  const hotelChineseAddress = "上海市静安区广中路809号 邮政编码: 200072";
+  const hotelPinyin = "Shànghǎi Shì Jìng'ān Qū Guǎngzhōng Lù 809 Hào (Yóuzhèng Biānmǎ: 200072)";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(hotelChineseAddress);
@@ -34,7 +34,7 @@ export const TripBanner: React.FC<TripBannerProps> = ({ onOpenPackingList, onOpe
             <span className="text-amber-400">•</span>
             <span className="text-amber-900 font-medium flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-amber-600 inline" />
-              Homeinn Plus Hotel
+              809 Guangzhong Rd, Jing'An
             </span>
           </div>
 
@@ -132,20 +132,20 @@ export const TripBanner: React.FC<TripBannerProps> = ({ onOpenPackingList, onOpe
             {/* Chinese Display Box */}
             <div className="mt-5 p-5 bg-amber-50 rounded-2xl border-2 border-amber-200 text-center">
               <span className="text-xs font-semibold uppercase tracking-wider text-amber-800 block mb-1">
-                师父，请送我到这里 (Driver, please take me here):
+                师傅，请送我到这里 (Driver, please take me here):
               </span>
               <p className="text-xl sm:text-2xl font-black text-slate-950 my-2 leading-relaxed tracking-wide">
-                中国上海市静安区延长中路302号<br />
-                <span className="text-amber-600">如家精选酒店 (上海火车站延长路地铁站店)</span>
+                上海市静安区广中路809号<br />
+                <span className="text-amber-600 text-lg">邮政编码: 200072</span>
               </p>
               <p className="text-xs text-slate-600 font-semibold mt-1">
-                Homeinn Plus Hotel • Yanchang Middle Road 302, Jing An District, Shanghai 200070
+                809 Guangzhong Rd, Jing An Qu, Shang Hai Shi, China, 200072
               </p>
               <p className="text-xs text-slate-600 italic mt-1 font-mono">
                 {hotelPinyin}
               </p>
               <div className="mt-3 inline-block px-3 py-1 bg-white rounded-lg border border-amber-300 text-xs text-slate-700 font-semibold">
-                🚇 靠近: 地铁1号线 延长路站 (上海火车站商圈)
+                🚇 静安区广中路 (靠近 地铁1号线 上海马戏城站 / 延长路站)
               </div>
             </div>
 

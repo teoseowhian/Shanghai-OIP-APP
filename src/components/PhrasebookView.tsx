@@ -65,7 +65,7 @@ export const PhrasebookView: React.FC<PhrasebookViewProps> = ({
   const dailyChallengePhrases = [
     SHANGHAI_PHRASES.find((p) => p.id === 'p2') || SHANGHAI_PHRASES[1], // 侬好
     SHANGHAI_PHRASES.find((p) => p.id === 'p10') || SHANGHAI_PHRASES[9], // 小笼包
-    SHANGHAI_PHRASES.find((p) => p.id === 'p17') || SHANGHAI_PHRASES[16], // 延长中路302号酒店
+    SHANGHAI_PHRASES.find((p) => p.id === 'p17') || SHANGHAI_PHRASES[16], // 静安区广中路809号酒店
   ];
 
   // Quiz state
@@ -257,7 +257,7 @@ export const PhrasebookView: React.FC<PhrasebookViewProps> = ({
             </h2>
 
             <p className="text-sm text-slate-200 leading-relaxed">
-              Master essential Shanghai street phrases, taxi addresses to Homeinn Plus Hotel, dining orders, and authentic Shanghainese (沪语) slang. Tap any card to hear standard audio pronunciation!
+              Master essential Shanghai street phrases, taxi addresses to our hotel (809 Guangzhong Rd), dining orders, and authentic Shanghainese (沪语) slang. Tap any card to hear standard audio pronunciation!
             </p>
           </div>
 

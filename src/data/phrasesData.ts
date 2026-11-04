@@ -161,10 +161,10 @@ export const SHANGHAI_PHRASES: Phrase[] = [
   {
     id: 'p17',
     category: 'transit',
-    hanzi: '师傅，请送我到延长中路302号如家精选酒店。',
-    pinyin: 'Shī fu, qǐng sòng wǒ dào Yán cháng Zhōng Lù sān bǎi líng èr hào Rú jiā Jīng xuǎn Jiǔ diàn.',
-    english: 'Driver, please take me to Homeinn Plus Hotel at 302 Yanchang Middle Road.',
-    situationTip: 'Show or read this to taxi/Didi drivers to return to our student basecamp!',
+    hanzi: '师傅，请送我到静安区广中路809号。',
+    pinyin: 'Shī fu, qǐng sòng wǒ dào Jìng\'ān Qū Guǎngzhōng Lù bābǎilíngjiǔ hào.',
+    english: 'Driver, please take me to 809 Guangzhong Road, Jing\'An District (邮政编码: 200072).',
+    situationTip: 'Show or read this to taxi/Didi drivers to return to our student basecamp at 809 Guangzhong Road!',
   },
   {
     id: 'p18',
@@ -419,14 +419,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     type: 'scenario',
     prompt: 'You need to return to DE Group 2 Basecamp hotel. Which address do you tell your taxi driver?',
     subPrompt: 'Choose the correct hotel address:',
-    audioText: '延长中路302号如家精选酒店',
+    audioText: '静安区广中路809号',
     options: [
-      { text: '延长中路302号如家精选酒店', subText: 'Homeinn Plus Hotel (Yanchang Middle Rd 302)', isCorrect: true },
+      { text: '静安区广中路809号 (邮编: 200072)', subText: '809 Guangzhong Rd, Jing\'An District', isCorrect: true },
       { text: '万航渡路829号', subText: 'Old location', isCorrect: false },
       { text: '浦东机场磁悬浮站', subText: 'PVG Airport Maglev Station', isCorrect: false },
       { text: '上海交通大学闵行校区', subText: 'SJTU Campus', isCorrect: false },
     ],
-    explanation: 'Our hotel is Homeinn Plus Hotel at 302 Yanchang Middle Road, Jing\'An District (如家精选酒店 上海火车站延长路地铁站店)!',
+    explanation: 'Our hotel basecamp is at 809 Guangzhong Road, Jing\'An District, Shanghai (上海市静安区广中路809号 邮政编码: 200072)!',
   },
   {
     id: 'q6',
