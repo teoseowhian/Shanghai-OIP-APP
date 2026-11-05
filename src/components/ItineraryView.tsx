@@ -10,7 +10,7 @@ interface ItineraryViewProps {
 export const ItineraryView: React.FC<ItineraryViewProps> = ({ onCheckInEvent, onOpenPackingList }) => {
   const [selectedDayNumber, setSelectedDayNumber] = useState<number>(1);
   const [checkedInEvents, setCheckedInEvents] = useState<Record<string, boolean>>({
-    '1-Arrive Shanghai Pudong (PVG) Terminal 1 — arrival of NP staff and students': true,
+    '1-Arrival of NP staff and students at Shanghai Pudong Airport (PVG-T1)': true,
   });
 
   const selectedDay = ITINERARY.find((d) => d.dayNumber === selectedDayNumber) || ITINERARY[0];

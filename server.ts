@@ -297,11 +297,11 @@ TRIP & PROGRAMME DETAILS:
 - Daily Phrase Challenge: Complete 3 phrases daily in the "🗣️ Phrases" tab for +5 Coins (strictly capped at 1 claim per day on server!).
 
 CONFIRMED VISITS (DAYS 2 TO 6 - OFFICIAL SCHEDULE):
-1. Shanghai Urban Planning Exhibition Center (SUPEC - 上海城市规划展示馆): Shanghai 2035 master plan, 3D scale model, smart mobility, sustainable urban density.
-2. ebm-papst China Factory (依必安派特): Precision EC motor engineering, fan aerodynamics, cleanroom air systems, energy-efficient ventilation.
-3. Shanghai University (SHU - 上海大学): Baoshan Campus. Taiji (太极) masterclass, traditional Chinese Calligraphy (书法) workshop, local etiquette & cross-cultural student dialogue.
-4. Shanghai Jiao Tong University (SJTU - 上海交通大学) Building Lab: Next-gen refrigeration research test rigs, HVAC thermodynamics, green building energy simulations & smart facility management.
-5. Shanghai Disney Resort (上海迪士尼度假区): Theme park operations, ride safety interlocks & sensor redundancy (TRON & Pirates), crowd logistics & flow control, central energy utilities.
+1. Day 2: Shanghai University (SHU - The 3rd floor of CIE). Orientation (09:00–09:30), ID photos (09:30–10:00), Introduction to the host country (10:00–11:30), Cultural Workshop 1 Taiji (14:30–16:00), Industrial Partner talk by AHRI (16:30–17:30).
+2. Day 3: Industry Visits (Departure 08:15 Hotel Lobby): SJTU Minhang Institute of Refrigeration and Cryogenics (10:00–12:00, 800 Dongchuan Rd) & ebm-papst Motor precision fan engineering (14:00–16:00, Lane 196 Yuntong Rd, Pudong). Transport provided by SHU.
+3. Day 4: Cultural Workshop 2 Chinese Calligraphy (09:30–11:00 at The 2nd floor of CIE) & Oriental Pearl TV Tower + Huangpu River cruise (12:30–17:00, 1 SHU buddy : 5 NP students). Transport: SHU-CIE.
+4. Day 5: Shanghai Disney Resort. Specialized visit – Disneyland Backoffice Operation (Morning) & Disney Resort Operations & Logistics (Afternoon). Transport: SHU-CIE.
+5. Day 6: Sustainability & Closing (Departure 09:00 Hotel Lobby): Shanghai Urban Planning Exhibition Hall (09:30–11:30, People's Square) & Official Closing Ceremony (13:30–14:00 at The 3rd floor of CIE). Transport: SHU-CIE.
 
 LINKEDIN POST ASSIGNMENT (DELIVERABLES TAB - DEADLINE 7TH NOV 2026):
 - Choose 2 of the 5 confirmed visits above.
