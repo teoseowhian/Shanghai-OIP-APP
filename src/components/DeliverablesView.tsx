@@ -198,6 +198,20 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = ({ currentStude
                 Brightspace Module: <strong className="font-mono text-white">Homepage - DE_OIP (Shanghai)_NOV26</strong>.
                 Complete all deliverables to qualify for 1 LU accreditation and grant disbursement.
               </p>
+              <div className="mt-2.5 flex items-center gap-2 flex-wrap">
+                <a
+                  href="https://nplms.polite.edu.sg/d2l/home/954487"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-emerald-950 font-black text-xs shadow-md hover:bg-emerald-50 active:scale-95 transition-all cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Open Brightspace Module (nplms.polite.edu.sg)</span>
+                </a>
+                <span className="text-[11px] font-mono text-emerald-200/90 hidden sm:inline">
+                  Course ID: 954487
+                </span>
+              </div>
             </div>
           </div>
 

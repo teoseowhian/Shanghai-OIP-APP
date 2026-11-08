@@ -24,16 +24,56 @@ import {
   Student,
   Quest,
   Announcement,
+  LECTURER_DATA,
 } from './data/tripData';
+import { ArrivalCardBanner } from './components/ArrivalCardBanner';
 
 interface AuthSession {
   studentId: string;
-  role: 'leader' | 'student';
+  role: 'leader' | 'student' | 'lecturer';
   leaderPin?: string;
 }
 
 export default function App() {
-  const [students, setStudents] = useState<Student[]>(INITIAL_STUDENTS);
+  // Persistent student state so coins remain exactly as last access upon refresh
+  const [students, setStudents] = useState<Student[]>(() => {
+    try {
+      const saved = localStorage.getItem('quest_shanghai_students_state_v2');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading students from localStorage', e);
+    }
+    return INITIAL_STUDENTS;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('quest_shanghai_students_state_v2', JSON.stringify(students));
+    } catch (e) {
+      console.warn('Error saving students to localStorage', e);
+    }
+  }, [students]);
+
+  // Sync state across multiple browser tabs
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'quest_shanghai_students_state_v2' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setStudents(parsed);
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
   
   // Persistent session from localStorage
   const [auth, setAuth] = useState<AuthSession | null>(() => {
@@ -98,6 +138,9 @@ export default function App() {
         const data = await res.json();
         if (data.students && Array.isArray(data.students)) {
           setStudents(data.students);
+          try {
+            localStorage.setItem('quest_shanghai_students_state_v2', JSON.stringify(data.students));
+          } catch {}
         }
         if (data.claims && Array.isArray(data.claims)) {
           setClaims(data.claims);
@@ -126,8 +169,11 @@ export default function App() {
   }, []);
 
   const currentStudentId = auth?.studentId || 's1';
-  const currentStudent = students.find((s) => s.id === currentStudentId) || students[0];
-  const isLeader = auth?.role === 'leader';
+  const currentStudent =
+    students.find((s) => s.id === currentStudentId) ||
+    (currentStudentId === 'lecturer_teo' ? LECTURER_DATA : students[0]);
+  const isLecturer = auth?.role === 'lecturer';
+  const isLeader = auth?.role === 'leader' || isLecturer;
 
   // If a student somehow navigates to leader_desk, redirect to rankings
   useEffect(() => {
@@ -136,7 +182,7 @@ export default function App() {
     }
   }, [isLeader, activeTab]);
 
-  const handleSignIn = (studentId: string, role: 'leader' | 'student', leaderPin?: string) => {
+  const handleSignIn = (studentId: string, role: 'leader' | 'student' | 'lecturer', leaderPin?: string) => {
     const session: AuthSession = { studentId, role, leaderPin };
     setAuth(session);
     try {
@@ -526,13 +572,14 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans antialiased selection:bg-amber-200 selection:text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans antialiased selection:bg-amber-200 selection:text-slate-900 flex flex-col overflow-x-hidden overflow-y-auto">
       {/* Top Header */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         currentStudent={currentStudent}
         isLeader={isLeader}
+        isLecturer={isLecturer}
         onSignOut={handleSignOut}
         onOpenPackingList={() => setShowPackingModal(true)}
         onOpenDeliverables={() => setShowDeliverablesModal(true)}
@@ -544,6 +591,9 @@ export default function App() {
         onOpenDeliverables={() => setShowDeliverablesModal(true)}
         onReturnToLogin={handleSignOut}
       />
+
+      {/* Action Required: China Digital Arrival Card Submission Banner */}
+      <ArrivalCardBanner currentStudent={currentStudent} />
 
       {/* Shanghai November Packing List Modal */}
       <PackingListModal
@@ -558,8 +608,8 @@ export default function App() {
         currentStudent={currentStudent}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Main Content Area - pb-32 for complete mobile scrolling */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32 sm:pb-20">
         {activeTab === 'rankings' && (
           <RankingsView
             students={students}

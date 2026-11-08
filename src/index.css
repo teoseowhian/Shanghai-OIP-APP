@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Enable smooth momentum scrolling on mobile for all scroll containers */
+* {
+  -webkit-overflow-scrolling: touch;
+}

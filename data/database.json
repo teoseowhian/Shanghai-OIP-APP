@@ -5,35 +5,15 @@
       "name": "Latasha Srinidthi Cliffton (Class Rep)",
       "avatar": "👩🏻‍💼",
       "squad": "Team Dragon",
-      "coins": 100,
-      "questsCompleted": 9,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 2",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 45,
-          "cumulativeGrade": 2.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 65,
-          "cumulativeGrade": 3.25
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 80,
-          "cumulativeGrade": 4
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 100,
-          "cumulativeGrade": 5
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -42,35 +22,15 @@
       "name": "Tan Yu Qi Kylie",
       "avatar": "👩🏻‍💼",
       "squad": "Team Dragon",
-      "coins": 68,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 2",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 35,
-          "cumulativeGrade": 1.75
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 50,
-          "cumulativeGrade": 2.5
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 68,
-          "cumulativeGrade": 3.4
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -79,35 +39,15 @@
       "name": "Bell Chai Jin Hui",
       "avatar": "👩🏻‍🎨",
       "squad": "Team Dragon",
-      "coins": 83,
-      "questsCompleted": 6,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 14",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 32,
-          "cumulativeGrade": 1.6
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 50,
-          "cumulativeGrade": 2.5
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 68,
-          "cumulativeGrade": 3.4
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 83,
-          "cumulativeGrade": 4.15
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -116,35 +56,15 @@
       "name": "Liew Xuan Ru",
       "avatar": "👩🏻‍🎨",
       "squad": "Team Dragon",
-      "coins": 88,
-      "questsCompleted": 7,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 14",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 40,
-          "cumulativeGrade": 2
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 55,
-          "cumulativeGrade": 2.75
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 72,
-          "cumulativeGrade": 3.6
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 88,
-          "cumulativeGrade": 4.4
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -153,35 +73,15 @@
       "name": "Chang Jzen Da",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Dragon",
-      "coins": 72,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 4",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 40,
-          "cumulativeGrade": 2
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 55,
-          "cumulativeGrade": 2.75
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 72,
-          "cumulativeGrade": 3.6
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -190,35 +90,15 @@
       "name": "Kagen Sew Wei Zhao",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Dragon",
-      "coins": 69,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 4",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 22,
-          "cumulativeGrade": 1.1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 38,
-          "cumulativeGrade": 1.9
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 54,
-          "cumulativeGrade": 2.7
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 69,
-          "cumulativeGrade": 3.45
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -227,35 +107,15 @@
       "name": "Aaron Goh Jia Yi",
       "avatar": "🧑🏻‍🎤",
       "squad": "Team Dragon",
-      "coins": 85,
-      "questsCompleted": 6,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 5",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 35,
-          "cumulativeGrade": 1.75
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 52,
-          "cumulativeGrade": 2.6
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 70,
-          "cumulativeGrade": 3.5
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 85,
-          "cumulativeGrade": 4.25
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -264,35 +124,15 @@
       "name": "Kevin Yeo Jiajun",
       "avatar": "🧑🏻‍💼",
       "squad": "Team Dragon",
-      "coins": 78,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 5",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 28,
-          "cumulativeGrade": 1.4
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 45,
-          "cumulativeGrade": 2.25
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 62,
-          "cumulativeGrade": 3.1
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 78,
-          "cumulativeGrade": 3.9
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -301,35 +141,15 @@
       "name": "Tan Rui Xin Felice",
       "avatar": "👩🏻‍🎓",
       "squad": "Team Dragon",
-      "coins": 76,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 6",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 45,
-          "cumulativeGrade": 2.25
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 60,
-          "cumulativeGrade": 3
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 76,
-          "cumulativeGrade": 3.8
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -338,35 +158,15 @@
       "name": "Ooi Kai Xuan Clarise",
       "avatar": "👩🏻‍🍳",
       "squad": "Team Dragon",
-      "coins": 82,
-      "questsCompleted": 6,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 6",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 30,
-          "cumulativeGrade": 1.5
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 48,
-          "cumulativeGrade": 2.4
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 66,
-          "cumulativeGrade": 3.3
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 82,
-          "cumulativeGrade": 4.1
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -375,35 +175,15 @@
       "name": "Ren ZhuoJing (Assis)",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 94,
-      "questsCompleted": 8,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 40,
-          "cumulativeGrade": 2
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 60,
-          "cumulativeGrade": 3
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 75,
-          "cumulativeGrade": 3.75
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 94,
-          "cumulativeGrade": 4.7
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -412,35 +192,15 @@
       "name": "Beh Li Enn",
       "avatar": "👩🏻‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 80,
-      "questsCompleted": 6,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 30,
-          "cumulativeGrade": 1.5
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 48,
-          "cumulativeGrade": 2.4
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 64,
-          "cumulativeGrade": 3.2
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 80,
-          "cumulativeGrade": 4
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -449,35 +209,15 @@
       "name": "Kong Tzing Enn",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 84,
-      "questsCompleted": 6,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 8",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 35,
-          "cumulativeGrade": 1.75
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 50,
-          "cumulativeGrade": 2.5
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 68,
-          "cumulativeGrade": 3.4
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 84,
-          "cumulativeGrade": 4.2
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -486,35 +226,15 @@
       "name": "Niya Danisyah Binte Zulkiflee",
       "avatar": "👩🏽‍🎓",
       "squad": "Team Xiaolongbao",
-      "coins": 71,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 8",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 24,
-          "cumulativeGrade": 1.2
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 40,
-          "cumulativeGrade": 2
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 56,
-          "cumulativeGrade": 2.8
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 71,
-          "cumulativeGrade": 3.55
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -523,35 +243,15 @@
       "name": "Lim Xuan Zheng Jacky",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Xiaolongbao",
-      "coins": 65,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 9",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 36,
-          "cumulativeGrade": 1.8
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 50,
-          "cumulativeGrade": 2.5
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 65,
-          "cumulativeGrade": 3.25
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -560,35 +260,15 @@
       "name": "Ryyan Bin Saleehullah",
       "avatar": "🧑🏽‍🍳",
       "squad": "Team Xiaolongbao",
-      "coins": 81,
-      "questsCompleted": 6,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 9",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 32,
-          "cumulativeGrade": 1.6
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 48,
-          "cumulativeGrade": 2.4
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 65,
-          "cumulativeGrade": 3.25
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 81,
-          "cumulativeGrade": 4.05
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -597,35 +277,15 @@
       "name": "Ifah Zakirah Binte Asri",
       "avatar": "👩🏽‍💼",
       "squad": "Team Xiaolongbao",
-      "coins": 77,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 10",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 26,
-          "cumulativeGrade": 1.3
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 44,
-          "cumulativeGrade": 2.2
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 60,
-          "cumulativeGrade": 3
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 77,
-          "cumulativeGrade": 3.85
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -634,35 +294,15 @@
       "name": "Siti Alisha Natasha Binte Zaini",
       "avatar": "👩🏽‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 75,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 10",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 42,
-          "cumulativeGrade": 2.1
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 58,
-          "cumulativeGrade": 2.9
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 75,
-          "cumulativeGrade": 3.75
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -671,35 +311,15 @@
       "name": "Ng Kim Yong",
       "avatar": "🧑🏻‍🏫",
       "squad": "Team Xiaolongbao",
-      "coins": 75,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 3",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 42,
-          "cumulativeGrade": 2.1
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 58,
-          "cumulativeGrade": 2.9
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 75,
-          "cumulativeGrade": 3.75
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -708,35 +328,15 @@
       "name": "Lim Jia En",
       "avatar": "👩🏻‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 66,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 3",
       "attendanceStatus": "late",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 35,
-          "cumulativeGrade": 1.75
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 50,
-          "cumulativeGrade": 2.5
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 66,
-          "cumulativeGrade": 3.3
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -745,35 +345,15 @@
       "name": "Adam Toh Yue Ren",
       "avatar": "👨🏽‍💼",
       "squad": "Team Maglev",
-      "coins": 90,
-      "questsCompleted": 7,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 11",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 35,
-          "cumulativeGrade": 1.75
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 55,
-          "cumulativeGrade": 2.75
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 70,
-          "cumulativeGrade": 3.5
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 90,
-          "cumulativeGrade": 4.5
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -782,35 +362,15 @@
       "name": "Chua Yu Zhe (Treasurer)",
       "avatar": "🧑🏻‍🔬",
       "squad": "Team Maglev",
-      "coins": 63,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 11",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 34,
-          "cumulativeGrade": 1.7
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 48,
-          "cumulativeGrade": 2.4
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 63,
-          "cumulativeGrade": 3.15
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -819,35 +379,15 @@
       "name": "Emmanuel Bagyam",
       "avatar": "🧑🏾‍💻",
       "squad": "Team Maglev",
-      "coins": 67,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 12",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 22,
-          "cumulativeGrade": 1.1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 38,
-          "cumulativeGrade": 1.9
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 52,
-          "cumulativeGrade": 2.6
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 67,
-          "cumulativeGrade": 3.35
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -856,35 +396,15 @@
       "name": "Kenny Lim Tian Yong",
       "avatar": "🧑🏻‍🎨",
       "squad": "Team Maglev",
-      "coins": 70,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 12",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 40,
-          "cumulativeGrade": 2
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 55,
-          "cumulativeGrade": 2.75
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 70,
-          "cumulativeGrade": 3.5
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -893,35 +413,15 @@
       "name": "Chua Yuan Kai Brayden",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Maglev",
-      "coins": 74,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 13",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 42,
-          "cumulativeGrade": 2.1
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 58,
-          "cumulativeGrade": 2.9
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 74,
-          "cumulativeGrade": 3.7
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -930,35 +430,15 @@
       "name": "Muhamad Nabil Harith Bin Mohamad Azlan",
       "avatar": "🧑🏽‍💻",
       "squad": "Team Maglev",
-      "coins": 73,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 13",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 24,
-          "cumulativeGrade": 1.2
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 40,
-          "cumulativeGrade": 2
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 56,
-          "cumulativeGrade": 2.8
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 73,
-          "cumulativeGrade": 3.65
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -967,35 +447,15 @@
       "name": "Lim Jia Zhe, Giovis",
       "avatar": "🧑🏻‍🎓",
       "squad": "Team Maglev",
-      "coins": 62,
-      "questsCompleted": 3,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 1",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 5,
-          "cumulativeGrade": 0.25
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 18,
-          "cumulativeGrade": 0.9
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 34,
-          "cumulativeGrade": 1.7
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 48,
-          "cumulativeGrade": 2.4
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 62,
-          "cumulativeGrade": 3.1
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -1004,35 +464,15 @@
       "name": "Lim Zhao Guang",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Maglev",
-      "coins": 79,
-      "questsCompleted": 5,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 1",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
-        },
-        {
-          "day": "Nov 9 (Tech)",
-          "coins": 30,
-          "cumulativeGrade": 1.5
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 45,
-          "cumulativeGrade": 2.25
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 62,
-          "cumulativeGrade": 3.1
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 79,
-          "cumulativeGrade": 3.95
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -1041,35 +481,32 @@
       "name": "Tan Jun Sen Ikko",
       "avatar": "🧑🏻‍🍳",
       "squad": "Team Maglev",
-      "coins": 65,
-      "questsCompleted": 4,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 15 (Single)",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
-        },
+          "coins": 0,
+          "cumulativeGrade": 0
+        }
+      ]
+    },
+    {
+      "id": "lecturer_teo",
+      "name": "Teo Seow Hian (Faculty-in-Charge)",
+      "avatar": "👨🏻‍🏫",
+      "squad": "Faculty Staff",
+      "coins": 0,
+      "questsCompleted": 0,
+      "roomNumber": "Room S1",
+      "attendanceStatus": "present",
+      "coinHistory": [
         {
-          "day": "Nov 9 (Tech)",
-          "coins": 20,
-          "cumulativeGrade": 1
-        },
-        {
-          "day": "Nov 10 (Uni)",
-          "coins": 35,
-          "cumulativeGrade": 1.75
-        },
-        {
-          "day": "Nov 11 (Lane)",
-          "coins": 50,
-          "cumulativeGrade": 2.5
-        },
-        {
-          "day": "Nov 12 (Art)",
-          "coins": 65,
-          "cumulativeGrade": 3.25
+          "day": "Nov 8 (Arr)",
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     }
@@ -1278,12 +715,21 @@
   },
   "announcements": [
     {
+      "id": "a_arrival_card",
+      "author": "Teo Seow Hian",
+      "role": "Faculty-in-Charge",
+      "timestamp": "Action Required • Due Friday",
+      "title": "🚨 China Digital Arrival Card Submission Required",
+      "content": "Dear all, please help to enter the arrival card as per address: https://s.nia.gov.cn/ArrivalCardFillingPhone/ \n• Invitation party: Shanghai University\n• Phone number: 18516246729\nSee if you can complete by this Friday!",
+      "priority": "urgent"
+    },
+    {
       "id": "a0",
       "author": "Teo Seow Hian",
       "role": "Faculty-in-Charge",
       "timestamp": "Today at 07:30",
       "title": "📢 Mandatory Deliverables for 1 LU & NYC AEP Grant",
-      "content": "Students: Under Brightspace module \"Homepage - DE_OIP (Shanghai)_NOV26\", ensure you complete: 1) Pre-trip Safety Quiz & Dialogue Recording, 2) NYC Online Modules at learn.nyc.gov.sg (Asia Ready, Module 10, Language & Culture), and 3) Reflection (min. 80 words) in Brightspace + Post-trip NYC Survey (sent Nov 13). Tap the \"Deliverables\" button in the header!",
+      "content": "Students: Under Brightspace module \"Homepage - DE_OIP (Shanghai)_NOV26\" (Location: https://nplms.polite.edu.sg/d2l/home/954487), ensure you complete: 1) Pre-trip Safety Quiz & Dialogue Recording, 2) NYC Online Modules at learn.nyc.gov.sg (Asia Ready, Module 10, Language & Culture), and 3) Reflection (min. 80 words) in Brightspace + Post-trip NYC Survey (sent Nov 13). Tap the \"Deliverables\" button in the header!",
       "priority": "urgent"
     },
     {
@@ -1315,6 +761,30 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794100522185",
+      "studentName": "All 29 Students",
+      "delta": 0,
+      "quest": "Cohort Coins Reset by Leader",
+      "time": "Just now",
+      "timestamp": 1794100522185
+    },
+    {
+      "id": "act_1794100512113",
+      "studentName": "Team Dragon",
+      "delta": 5,
+      "quest": "Test Dragon Award",
+      "time": "Just now",
+      "timestamp": 1794100512113
+    },
+    {
+      "id": "act_1794100150596",
+      "studentName": "All 29 Students",
+      "delta": 0,
+      "quest": "Cohort Coins Reset by Leader",
+      "time": "Just now",
+      "timestamp": 1794100150596
+    },
     {
       "id": "act_1793491252645",
       "studentName": "Selected Cohort",

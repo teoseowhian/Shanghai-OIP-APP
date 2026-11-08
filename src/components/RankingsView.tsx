@@ -79,12 +79,15 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
     { studentName: 'Tan Zheng Kang, Aaron', delta: 10, quest: 'Pudong Architecture Selfie', time: '2 hrs ago' },
   ]);
 
-  // Sort students by coins descending
-  const sortedStudents = [...students].sort((a, b) => b.coins - a.coins);
+  // Filter cohort students (excluding faculty staff from student ranking)
+  const cohortStudents = students.filter((s) => s.id !== 'lecturer_teo' && s.squad !== 'Faculty Staff');
 
-  // Calculate Squad Stats
+  // Sort students by coins descending
+  const sortedStudents = [...cohortStudents].sort((a, b) => b.coins - a.coins);
+
+  // Calculate Squad Stats (Student squads only)
   const squadMap: Record<string, { totalCoins: number; memberCount: number; color: string }> = {};
-  students.forEach((s) => {
+  cohortStudents.forEach((s) => {
     if (!squadMap[s.squad]) {
       squadMap[s.squad] = {
         totalCoins: 0,
@@ -356,22 +359,64 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
               </p>
             </div>
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  onClick={() => handleOpenModal(currentStudent.id, 'award')}
+                  onClick={() => handleOpenModal(currentStudent.id, 'award', 'all')}
                   className="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-md cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5 text-amber-400" />
                   <span>+ Award Coins</span>
                 </button>
                 <button
-                  onClick={() => handleOpenModal(currentStudent.id, 'deduct')}
+                  onClick={() => handleOpenModal(currentStudent.id, 'deduct', 'all')}
                   className="py-2.5 px-3 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-md cursor-pointer"
                 >
                   <Minus className="w-3.5 h-3.5 text-rose-400" />
                   <span>- Deduct Coins</span>
                 </button>
+              </div>
+
+              {/* 4 Direct Squad Selection Shortcuts */}
+              <div className="bg-amber-100/60 p-2 rounded-xl border border-amber-300/60">
+                <div className="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-1 flex items-center justify-between">
+                  <span>Quick Squad Selection:</span>
+                  <span className="text-[9px] font-semibold text-slate-500">Tap to Award</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1 text-[11px] font-black">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(currentStudent.id, 'award', 'all')}
+                    className="py-1 px-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-300 text-center border border-slate-700 transition-all shadow-2xs cursor-pointer truncate"
+                    title="Award coins to All Squad (29 Students)"
+                  >
+                    👥 All Squad
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(currentStudent.id, 'award', 'Team Dragon')}
+                    className="py-1 px-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-center border border-amber-600 transition-all shadow-2xs cursor-pointer truncate"
+                    title="Award coins to Dragon Squad (10 Students)"
+                  >
+                    🐉 Dragon
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(currentStudent.id, 'award', 'Team Xiaolongbao')}
+                    className="py-1 px-1 rounded-lg bg-rose-500 hover:bg-rose-600 text-white text-center border border-rose-600 transition-all shadow-2xs cursor-pointer truncate"
+                    title="Award coins to Xiaolongbao Squad (10 Students)"
+                  >
+                    🥟 Xiaolongbao
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(currentStudent.id, 'award', 'Team Maglev')}
+                    className="py-1 px-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-center border border-blue-700 transition-all shadow-2xs cursor-pointer truncate"
+                    title="Award coins to Maglev Squad (9 Students)"
+                  >
+                    🚅 Maglev
+                  </button>
+                </div>
               </div>
               {onReturnToLogin && (
                 <button
@@ -822,7 +867,7 @@ export const RankingsView: React.FC<RankingsViewProps> = ({
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <span>👥 All (29)</span>
+                    <span>👥 All Squad</span>
                   </button>
 
                   <button

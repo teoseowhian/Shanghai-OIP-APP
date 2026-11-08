@@ -289,6 +289,8 @@ TRIP & PROGRAMME DETAILS:
 - Group: Shanghai Immersion (DE Group 2)
 - Dates: 8 to 14 November 2026 (7 Days)
 - Hotel Base: 809 Guangzhong Rd, Jing An Qu, Shang Hai Shi, China, 200072 (上海市静安区广中路809号 邮政编码: 200072), near Metro Line 1 Shanghai Circus World & Yanchang Road stations.
+- Flights: Outbound China Eastern MU546 (10:10–15:15 PVG-T1) on 8 Nov 2026. Return China Eastern MU545 at 4:25 PM (16:25 PVG-T1 to Singapore Changi Terminal 3 approx. 21:55) on 14 Nov 2026.
+- Deliverables Module: Brightspace "DE_OIP (Shanghai)_NOV26" at https://nplms.polite.edu.sg/d2l/home/954487
 - Student Leaders:
   - Class Rep: Latasha (Roll-call, liaison)
   - Assis: Ren ZhuoJing (Directions, translation, local logistics)
@@ -682,8 +684,18 @@ app.post('/api/coins/batch-modify', (req, res) => {
 
   db.students = db.students.map((s) => {
     let match = false;
-    if (targetScope === 'all') match = true;
-    else if (targetScope === s.squad || targetScope === s.id) match = true;
+    const norm = String(targetScope).toLowerCase().trim();
+    if (norm === 'all' || norm === 'all squad' || norm === 'all squads') {
+      if (s.id !== 'lecturer_teo' && s.squad !== 'Faculty Staff') match = true;
+    } else if (norm.includes('dragon') && s.squad.toLowerCase().includes('dragon')) {
+      match = true;
+    } else if (norm.includes('xiaolongbao') && s.squad.toLowerCase().includes('xiaolongbao')) {
+      match = true;
+    } else if ((norm.includes('maglev') || norm.includes('maglex')) && s.squad.toLowerCase().includes('maglev')) {
+      match = true;
+    } else if (targetScope === s.squad || targetScope === s.id) {
+      match = true;
+    }
 
     if (match) {
       const newCoins = Math.max(0, Math.min(100, s.coins + delta));
@@ -707,10 +719,14 @@ app.post('/api/coins/batch-modify', (req, res) => {
   });
 
   const scopeLabel =
-    targetScope === 'all'
+    targetScope === 'all' || targetScope === 'All Squad' || targetScope === 'All Squads'
       ? 'All 29 Students'
-      : targetScope.startsWith('Team')
-      ? targetScope
+      : targetScope.includes('Dragon')
+      ? 'Team Dragon'
+      : targetScope.includes('Xiaolongbao')
+      ? 'Team Xiaolongbao'
+      : targetScope.includes('Maglev') || targetScope.includes('Maglex')
+      ? 'Team Maglev'
       : 'Selected Cohort';
 
   db.activityLog.unshift({

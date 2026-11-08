@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle, Compass, Train, Utensils, Shield } from 'lucide-react';
+import { X, Send, Move, RotateCcw } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -12,11 +12,44 @@ export const AskBaoBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [dockSide, setDockSide] = useState<'right' | 'left'>('right');
+
+  // Draggable position state for the floating button
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(() => {
+    try {
+      const savedX = localStorage.getItem('ask_bao_pos_x');
+      const savedY = localStorage.getItem('ask_bao_pos_y');
+      if (savedX && savedY) {
+        return { x: parseInt(savedX, 10), y: parseInt(savedY, 10) };
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  });
+
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef<{
+    startX: number;
+    startY: number;
+    elemX: number;
+    elemY: number;
+    hasMoved: boolean;
+  }>({
+    startX: 0,
+    startY: 0,
+    elemX: 0,
+    elemY: 0,
+    hasMoved: false,
+  });
+
+  const buttonRef = useRef<HTMLDivElement | null>(null);
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'm1',
       sender: 'bao',
-      text: "🐲 Nong Hao (侬好)! I'm Bao (小龙宝), your Shanghai Immersion AI Trip Bot! Staying with DE Group 2 at 809 Guangzhong Road, Jing'An District (上海市静安区广中路809号)? Ask me anything about Metro Line 1, delicious dumplings, quest coin secrets, or student leaders Latasha, Ren ZhuoJing (Assis) & Chua Yu Zhe!",
+      text: "🐲 Nong Hao (侬好)! I'm Bao (小龙宝), your Shanghai Immersion AI Trip Bot! Staying with DE Group 2 at 809 Guangzhong Road, Jing'An District (上海市静安区广中路809号)? Ask me anything about Metro Line 1, delicious dumplings, quest coin secrets, or faculty/student leaders!",
       timestamp: 'Just now',
     },
   ]);
@@ -28,6 +61,110 @@ export const AskBaoBot: React.FC = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen]);
+
+  // Handle Dragging via Touch & Mouse
+  const handleStartDrag = (clientX: number, clientY: number) => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    dragRef.current = {
+      startX: clientX,
+      startY: clientY,
+      elemX: rect.left,
+      elemY: rect.top,
+      hasMoved: false,
+    };
+    setIsDragging(true);
+  };
+
+  const handleMoveDrag = (clientX: number, clientY: number) => {
+    if (!isDragging) return;
+    const dx = clientX - dragRef.current.startX;
+    const dy = clientY - dragRef.current.startY;
+
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      dragRef.current.hasMoved = true;
+    }
+
+    const buttonWidth = buttonRef.current?.offsetWidth || 160;
+    const buttonHeight = buttonRef.current?.offsetHeight || 50;
+
+    const minX = 10;
+    const maxX = Math.max(10, window.innerWidth - buttonWidth - 10);
+    const minY = 10;
+    const maxY = Math.max(10, window.innerHeight - buttonHeight - 10);
+
+    const newX = Math.min(maxX, Math.max(minX, dragRef.current.elemX + dx));
+    const newY = Math.min(maxY, Math.max(minY, dragRef.current.elemY + dy));
+
+    setPosition({ x: newX, y: newY });
+  };
+
+  const handleEndDrag = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    if (dragRef.current.hasMoved && position) {
+      try {
+        localStorage.setItem('ask_bao_pos_x', String(position.x));
+        localStorage.setItem('ask_bao_pos_y', String(position.y));
+        if (position.x < window.innerWidth / 2) {
+          setDockSide('left');
+        } else {
+          setDockSide('right');
+        }
+      } catch {
+        // ignore
+      }
+    } else if (!dragRef.current.hasMoved) {
+      // Tap or click without drag -> open chat!
+      setIsOpen(true);
+    }
+  };
+
+  // Window listeners for dragging outside element
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const onMouseMove = (e: MouseEvent) => {
+      handleMoveDrag(e.clientX, e.clientY);
+    };
+    const onMouseUp = () => {
+      handleEndDrag();
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleMoveDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+    const onTouchEnd = () => {
+      handleEndDrag();
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [isDragging, position]);
+
+  const resetPosition = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPosition(null);
+    setDockSide('right');
+    try {
+      localStorage.removeItem('ask_bao_pos_x');
+      localStorage.removeItem('ask_bao_pos_y');
+    } catch {
+      // ignore
+    }
+  };
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputMessage;
@@ -81,50 +218,105 @@ export const AskBaoBot: React.FC = () => {
   };
 
   const quickPrompts = [
+    { label: '✈️ Arrival Card Portal', text: 'How do I submit the China digital arrival card on s.nia.gov.cn? What is the invitation party and phone number?' },
     { label: '🎓 1 LU Deliverables', text: 'What are the required deliverables for 1 LU PLP-Global Readiness and the NYC AEP grant under Brightspace DE_OIP (Shanghai)_NOV26?' },
     { label: '🧳 What to pack in Nov?', text: 'What should I pack for our 7-day Shanghai immersion in November? What clothes and PT gear do I need?' },
     { label: '🚇 Metro to The Bund', text: 'How do I take the Metro from our hotel at 809 Guangzhong Road to The Bund?' },
     { label: '🥟 Food Spots Nearby', text: 'What are the top Xiaolongbao and Shengjianbao places within walking distance of our hotel at 809 Guangzhong Road?' },
     { label: '🗣️ Shanghainese Phrases', text: 'Teach me 3 essential Shanghainese phrases to complete the slang quest!' },
-    { label: '🚨 Emergency Contacts', text: 'Who do I call in an emergency? Show Latasha, Ren ZhuoJing, and Chua Yu Zhe\'s contacts.' },
+    { label: '🚨 Emergency Contacts', text: 'Who do I call in an emergency? Show Faculty and student leaders contacts.' },
   ];
+
+  const floatingStyle: React.CSSProperties = position
+    ? {
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        zIndex: 50,
+      }
+    : {
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        zIndex: 50,
+      };
 
   return (
     <>
-      {/* Floating Trigger Button (Matches the golden pill button in prototype) */}
-      <div className="fixed bottom-6 right-6 z-50">
-        {!isOpen && (
-          <button
-            onClick={() => setIsOpen(true)}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 font-black shadow-xl shadow-amber-500/30 border-2 border-white hover:scale-105 active:scale-95 transition-all group"
+      {/* Shiftable / Draggable Floating Trigger Button */}
+      {!isOpen && (
+        <div
+          ref={buttonRef}
+          style={floatingStyle}
+          className="select-none touch-none"
+        >
+          <div
+            onMouseDown={(e) => {
+              if (e.button === 0) {
+                handleStartDrag(e.clientX, e.clientY);
+              }
+            }}
+            onTouchStart={(e) => {
+              if (e.touches.length > 0) {
+                handleStartDrag(e.touches[0].clientX, e.touches[0].clientY);
+              }
+            }}
+            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 font-black shadow-xl shadow-amber-500/30 border-2 border-white hover:scale-105 active:scale-95 transition-transform group cursor-grab ${
+              isDragging ? 'cursor-grabbing scale-105 ring-4 ring-amber-300/60' : ''
+            }`}
+            title="Drag to shift Ask Bao anywhere on your screen!"
           >
+            {/* Grip handle indicator */}
+            <div className="flex items-center text-amber-900/70 hover:text-amber-950" title="Hold & drag anywhere">
+              <Move className="w-3.5 h-3.5" />
+            </div>
+
             {/* Dragon Avatar in White Circle */}
-            <div className="relative w-9 h-9 rounded-full bg-white flex items-center justify-center text-xl shadow-xs">
+            <div className="relative w-8 h-8 rounded-full bg-white flex items-center justify-center text-lg shadow-xs">
               <span>🐲</span>
-              <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
             </div>
+
             <div className="text-left pr-1">
-              <div className="text-sm font-black tracking-tight leading-tight">Ask Bao!</div>
-              <div className="text-[10px] font-bold text-amber-950/80 uppercase tracking-wider">Your Trip Bot</div>
+              <div className="text-xs font-black tracking-tight leading-tight flex items-center gap-1">
+                <span>Ask Bao!</span>
+              </div>
+              <div className="text-[9px] font-bold text-amber-950/80 uppercase tracking-wider flex items-center gap-1">
+                <span>Drag or Tap</span>
+              </div>
             </div>
-          </button>
-        )}
-      </div>
+
+            {position && (
+              <button
+                type="button"
+                onClick={resetPosition}
+                className="w-5 h-5 rounded-full bg-black/10 hover:bg-black/20 text-slate-800 flex items-center justify-center text-[10px] ml-0.5 cursor-pointer"
+                title="Reset button to bottom-right corner"
+              >
+                <RotateCcw className="w-2.5 h-2.5" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Chat Drawer / Modal */}
       {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 sm:h-[600px] z-50 flex flex-col bg-white sm:rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
-          
+        <div
+          className={`fixed inset-0 sm:inset-auto sm:bottom-6 sm:w-96 sm:h-[600px] z-50 flex flex-col bg-white sm:rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200 ${
+            dockSide === 'left' ? 'sm:left-6' : 'sm:right-6'
+          }`}
+        >
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-between border-b border-amber-300 shadow-xs">
+          <div className="p-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-between border-b border-amber-300 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="relative w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-xs">
+              <div className="relative w-9 h-9 rounded-2xl bg-white flex items-center justify-center text-xl shadow-xs">
                 <span>🐲</span>
-                <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white"></span>
+                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="font-black text-sm text-slate-950">Bao (小龙宝)</h3>
+                  <h3 className="font-black text-sm text-slate-900">Bao (小龙宝)</h3>
                   <span className="text-[10px] font-bold bg-amber-200/90 text-amber-900 px-1.5 py-0.2 rounded-md">
                     AI Guide
                   </span>
@@ -133,12 +325,24 @@ export const AskBaoBot: React.FC = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 text-slate-900 flex items-center justify-center font-bold text-sm transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              {/* Dock Side Shift Button */}
+              <button
+                onClick={() => setDockSide(dockSide === 'right' ? 'left' : 'right')}
+                className="hidden sm:inline-flex p-1.5 rounded-lg bg-black/10 hover:bg-black/20 text-slate-900 font-bold text-xs transition-colors"
+                title={`Dock to ${dockSide === 'right' ? 'Left' : 'Right'} side`}
+              >
+                <Move className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 text-slate-900 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer"
+                title="Close chat"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Messages Area */}
@@ -186,7 +390,7 @@ export const AskBaoBot: React.FC = () => {
               <button
                 key={i}
                 onClick={() => handleSendMessage(qp.text)}
-                className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-white hover:bg-amber-100 text-slate-700 hover:text-slate-900 border border-slate-200 font-medium transition-colors"
+                className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-white hover:bg-amber-100 text-slate-700 hover:text-slate-900 border border-slate-200 font-medium transition-colors cursor-pointer shrink-0"
               >
                 {qp.label}
               </button>
@@ -205,18 +409,17 @@ export const AskBaoBot: React.FC = () => {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Ask Bao about metro, food, or quests..."
+              placeholder="Ask Bao about metro, food, arrival card, or quests..."
               className="flex-1 p-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
             <button
               type="submit"
               disabled={isLoading || !inputMessage.trim()}
-              className="p-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-bold shadow-xs transition-colors"
+              className="p-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-bold shadow-xs transition-colors cursor-pointer"
             >
               <Send className="w-4 h-4" />
             </button>
           </form>
-
         </div>
       )}
     </>

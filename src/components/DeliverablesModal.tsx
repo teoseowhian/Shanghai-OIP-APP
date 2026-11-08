@@ -40,6 +40,8 @@ const DELIVERABLES_LIST: DeliverableItem[] = [
     title: 'Safety Briefing & Dialogue Session',
     description: 'Essential mandatory pre-departure requirements on Brightspace.',
     requirement: 'Mandatory before trip commencement to clear travel readiness clearance.',
+    link: 'https://nplms.polite.edu.sg/d2l/home/954487',
+    linkLabel: 'Open Brightspace Module (nplms.polite.edu.sg)',
     subtasks: [
       {
         id: 'safety_quiz',
@@ -88,6 +90,8 @@ const DELIVERABLES_LIST: DeliverableItem[] = [
       'Synthesize your learning from site visits, university exchanges, and cultural quests.',
     requirement:
       'Required for 1 Learning Unit (1 LU) under PLP-Global Readiness & NYC Grant disbursement.',
+    link: 'https://nplms.polite.edu.sg/d2l/home/954487',
+    linkLabel: 'Open Brightspace Module (nplms.polite.edu.sg)',
     subtasks: [
       {
         id: 'reflection_80_words',
@@ -238,6 +242,15 @@ export const DeliverablesModal: React.FC<DeliverablesModalProps> = ({
                 <p className="text-xs text-emerald-100/90 mt-0.5">
                   Brightspace Module: <span className="font-mono font-bold text-white">Homepage - DE_OIP (Shanghai)_NOV26</span>
                 </p>
+                <a
+                  href="https://nplms.polite.edu.sg/d2l/home/954487"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white text-emerald-950 font-bold text-xs shadow-xs hover:bg-emerald-50 active:scale-95 transition-all mt-2 cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Open Brightspace Portal (Course 954487)</span>
+                </a>
               </div>
             </div>
 

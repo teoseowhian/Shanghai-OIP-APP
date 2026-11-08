@@ -7,6 +7,7 @@ interface HeaderProps {
   setActiveTab: (tab: 'rankings' | 'leader_desk' | 'loot' | 'itinerary' | 'phrasebook' | 'survey' | 'deliverables') => void;
   currentStudent: Student;
   isLeader: boolean;
+  isLecturer?: boolean;
   onSignOut: () => void;
   onOpenPackingList?: () => void;
   onOpenDeliverables?: () => void;
@@ -17,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   currentStudent,
   isLeader,
+  isLecturer,
   onSignOut,
   onOpenPackingList,
   onOpenDeliverables,
@@ -71,9 +73,15 @@ export const Header: React.FC<HeaderProps> = ({
                   <span>🎯</span> 100 Coins = <strong className="text-emerald-700">5.0% Module Grade</strong>
                 </span>
                 <span className="hidden sm:inline-block text-slate-300">|</span>
-                <span className="text-slate-600 hidden sm:inline-flex items-center gap-1">
-                  You have <span className="font-bold text-amber-600">{currentStudent.coins} Coins</span> ({gradeUnlocked}% unlocked)
-                </span>
+                {isLecturer ? (
+                  <span className="text-purple-700 font-bold hidden sm:inline-flex items-center gap-1 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
+                    👨🏻‍🏫 Faculty In-Charge • Cohort Supervisor Access
+                  </span>
+                ) : (
+                  <span className="text-slate-600 hidden sm:inline-flex items-center gap-1">
+                    You have <span className="font-bold text-amber-600">{currentStudent.coins} Coins</span> ({gradeUnlocked}% unlocked)
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -210,12 +218,20 @@ export const Header: React.FC<HeaderProps> = ({
                     <span>{currentStudent.name}</span>
                   </div>
                   <div className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
-                    <span className="text-amber-700 font-bold">{currentStudent.coins}c</span>
-                    <span>•</span>
-                    {isLeader ? (
-                      <span className="text-amber-800 font-extrabold">👑 Leader</span>
+                    {isLecturer ? (
+                      <span className="text-purple-800 font-extrabold flex items-center gap-1">
+                        👨🏻‍🏫 Faculty In-Charge
+                      </span>
                     ) : (
-                      <span className="text-slate-600 font-medium">🎓 Student</span>
+                      <>
+                        <span className="text-amber-700 font-bold">{currentStudent.coins}c</span>
+                        <span>•</span>
+                        {isLeader ? (
+                          <span className="text-amber-800 font-extrabold">👑 Leader</span>
+                        ) : (
+                          <span className="text-slate-600 font-medium">🎓 Student</span>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
