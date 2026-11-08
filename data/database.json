@@ -73,15 +73,15 @@
       "name": "Chang Jzen Da",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Dragon",
-      "coins": 10,
-      "questsCompleted": 1,
+      "coins": 0,
+      "questsCompleted": 0,
       "roomNumber": "Room 4",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -761,14 +761,6 @@
     }
   ],
   "activityLog": [
-    {
-      "id": "act_1794131062481",
-      "studentName": "Chang Jzen Da",
-      "delta": 10,
-      "quest": "restart durability check",
-      "time": "Just now",
-      "timestamp": 1794131062481
-    },
     {
       "id": "act_1794100522185",
       "studentName": "All 29 Students",
