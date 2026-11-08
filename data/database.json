@@ -22,15 +22,15 @@
       "name": "Tan Yu Qi Kylie",
       "avatar": "👩🏻‍💼",
       "squad": "Team Dragon",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 2",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794180910769",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfast day 1",
+      "time": "Just now",
+      "timestamp": 1794180910769
+    },
     {
       "id": "act_1794180825932",
       "studentName": "Selected Cohort",
