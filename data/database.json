@@ -311,15 +311,15 @@
       "name": "Ng Kim Yong",
       "avatar": "🧑🏻‍🏫",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 3,
+      "coins": 25,
+      "questsCompleted": 4,
       "roomNumber": "Room 3",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794181075434",
+      "studentName": "Selected Cohort",
+      "delta": 15,
+      "quest": "Completed Immersion Task",
+      "time": "Just now",
+      "timestamp": 1794181075434
+    },
     {
       "id": "act_1794181020712",
       "studentName": "Team Xiaolongbao",
