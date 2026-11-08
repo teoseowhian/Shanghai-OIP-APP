@@ -362,15 +362,15 @@
       "name": "Chua Yu Zhe (Treasurer)",
       "avatar": "🧑🏻‍🔬",
       "squad": "Team Maglev",
-      "coins": 5,
-      "questsCompleted": 1,
+      "coins": 15,
+      "questsCompleted": 2,
       "roomNumber": "Room 11",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 5,
-          "cumulativeGrade": 0.25
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794132038586",
+      "studentName": "Selected Cohort",
+      "delta": 10,
+      "quest": "good leadership",
+      "time": "Just now",
+      "timestamp": 1794132038586
+    },
     {
       "id": "act_1794132015047",
       "studentName": "Selected Cohort",
