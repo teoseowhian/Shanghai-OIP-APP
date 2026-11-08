@@ -5,15 +5,15 @@
       "name": "Latasha Srinidthi Cliffton (Class Rep)",
       "avatar": "👩🏻‍💼",
       "squad": "Team Dragon",
-      "coins": 5,
-      "questsCompleted": 1,
+      "coins": 15,
+      "questsCompleted": 2,
       "roomNumber": "Room 2",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 5,
-          "cumulativeGrade": 0.25
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794131992485",
+      "studentName": "Selected Cohort",
+      "delta": 10,
+      "quest": "Good Leadership ",
+      "time": "Just now",
+      "timestamp": 1794131992485
+    },
     {
       "id": "act_1794131944325",
       "studentName": "All 29 Students",
