@@ -101,6 +101,147 @@ interface DatabaseSchema {
 
 const DB_FILE = path.resolve(__dirname, 'data', 'database.json');
 
+// ---------------------------------------------------------------------------
+// Durable storage layer
+// Render's free tier has an ephemeral filesystem: the local JSON file is wiped
+// on every restart / redeploy / idle spin-down, which is why coins kept resetting.
+// When GITHUB_TOKEN is configured we mirror the live database to a dedicated
+// "data" branch (which never triggers a Render deploy) and reload it at boot.
+// ---------------------------------------------------------------------------
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'teoseowhian/Shanghai-OIP-APP';
+const GITHUB_DATA_BRANCH = process.env.GITHUB_DATA_BRANCH || 'data';
+const GITHUB_DATA_PATH = 'data/database.json';
+const githubSyncEnabled = Boolean(GITHUB_TOKEN);
+
+const githubHeaders = (): Record<string, string> => ({
+  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  Accept: 'application/vnd.github+json',
+  'Content-Type': 'application/json',
+  'User-Agent': 'quest-shanghai-app',
+});
+
+function isValidDatabase(value: unknown): value is DatabaseSchema {
+  return Boolean(
+    value && typeof value === 'object' && Array.isArray((value as DatabaseSchema).students)
+  );
+}
+
+async function githubGetJson(pathname: string): Promise<any | null> {
+  try {
+    const res = await fetch(`https://api.github.com${pathname}`, { headers: githubHeaders() });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.warn('[data-sync] GitHub GET failed:', err);
+    return null;
+  }
+}
+
+async function ensureDataBranch(): Promise<boolean> {
+  const branch = await githubGetJson(`/repos/${GITHUB_REPO}/git/ref/heads/${GITHUB_DATA_BRANCH}`);
+  if (branch) return true;
+
+  const mainRef = await githubGetJson(`/repos/${GITHUB_REPO}/git/ref/heads/main`);
+  const mainSha = mainRef && mainRef.object ? mainRef.object.sha : null;
+  if (!mainSha) {
+    console.warn('[data-sync] Cannot create data branch: main ref unavailable');
+    return false;
+  }
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/refs`, {
+      method: 'POST',
+      headers: githubHeaders(),
+      body: JSON.stringify({ ref: `refs/heads/${GITHUB_DATA_BRANCH}`, sha: mainSha }),
+    });
+    if (!res.ok) console.warn('[data-sync] Failed to create data branch:', res.status);
+    return res.ok;
+  } catch (err) {
+    console.warn('[data-sync] Error creating data branch:', err);
+    return false;
+  }
+}
+
+async function loadDatabaseFromGitHub(): Promise<DatabaseSchema | null> {
+  if (!githubSyncEnabled) return null;
+  const file = await githubGetJson(
+    `/repos/${GITHUB_REPO}/contents/${GITHUB_DATA_PATH}?ref=${GITHUB_DATA_BRANCH}`
+  );
+  if (!file || !file.content) return null;
+  try {
+    const parsed = JSON.parse(Buffer.from(file.content, 'base64').toString('utf-8'));
+    if (isValidDatabase(parsed)) return parsed;
+    console.warn('[data-sync] Remote database failed validation');
+  } catch (err) {
+    console.warn('[data-sync] Remote database failed to parse:', err);
+  }
+  return null;
+}
+
+let githubSyncTimer: ReturnType<typeof setTimeout> | null = null;
+let githubPushChain: Promise<void> = Promise.resolve();
+
+// Debounced: batches a burst of approvals/claims into a single commit
+function scheduleGitHubSync(): void {
+  if (!githubSyncEnabled) return;
+  if (githubSyncTimer) clearTimeout(githubSyncTimer);
+  githubSyncTimer = setTimeout(() => {
+    githubSyncTimer = null;
+    githubPushChain = githubPushChain.then(() => pushDatabaseToGitHub());
+  }, 5000);
+}
+
+async function pushDatabaseToGitHub(): Promise<void> {
+  if (!githubSyncEnabled) return;
+  try {
+    const ready = await ensureDataBranch();
+    if (!ready) return;
+
+    const existing = await githubGetJson(
+      `/repos/${GITHUB_REPO}/contents/${GITHUB_DATA_PATH}?ref=${GITHUB_DATA_BRANCH}`
+    );
+    const payload: Record<string, unknown> = {
+      message: `chore(data): sync live database (${db.students.length} students)`,
+      content: Buffer.from(JSON.stringify(db, null, 2), 'utf-8').toString('base64'),
+      branch: GITHUB_DATA_BRANCH,
+    };
+    if (existing && existing.sha) payload.sha = existing.sha;
+
+    const res = await fetch(
+      `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_DATA_PATH}`,
+      { method: 'PUT', headers: githubHeaders(), body: JSON.stringify(payload) }
+    );
+    if (!res.ok) {
+      const text = await res.text();
+      console.warn('[data-sync] Push failed:', res.status, text.slice(0, 200));
+    } else {
+      console.log('[data-sync] Saved live database to GitHub data branch');
+    }
+  } catch (err) {
+    console.warn('[data-sync] Push error:', err);
+  }
+}
+
+async function bootstrapDatabase(): Promise<void> {
+  if (!githubSyncEnabled) {
+    console.log(
+      '[data-sync] GITHUB_TOKEN not set — using ephemeral local storage (data resets on restart)'
+    );
+    return;
+  }
+  const remote = await loadDatabaseFromGitHub();
+  if (remote) {
+    db = remote;
+    writeDatabaseFile(db);
+    console.log('[data-sync] Loaded live database from GitHub data branch');
+    return;
+  }
+  console.log('[data-sync] No remote snapshot yet — seeding the data branch from local database');
+  writeDatabaseFile(db);
+  await pushDatabaseToGitHub();
+}
+
+
 // Helper to ensure database file exists and load it
 function loadDatabase(): DatabaseSchema {
   try {
@@ -208,8 +349,8 @@ function loadDatabase(): DatabaseSchema {
   return initialDb;
 }
 
-// Atomic save helper
-function saveDatabase(data: DatabaseSchema): void {
+// Atomic local write (fast cache / fallback when GitHub sync is off)
+function writeDatabaseFile(data: DatabaseSchema): void {
   try {
     const dir = path.dirname(DB_FILE);
     if (!fs.existsSync(dir)) {
@@ -221,6 +362,12 @@ function saveDatabase(data: DatabaseSchema): void {
   } catch (err) {
     console.error('Failed to persist database to disk:', err);
   }
+}
+
+// Save helper: writes locally, then mirrors to the durable GitHub data branch
+function saveDatabase(data: DatabaseSchema): void {
+  writeDatabaseFile(data);
+  scheduleGitHubSync();
 }
 
 // Live memory copy of database
@@ -949,6 +1096,9 @@ app.post('/api/database/reset', (_req, res) => {
 // ==========================================
 
 async function start() {
+  // Reload the durable snapshot before serving traffic (no-op without GITHUB_TOKEN)
+  await bootstrapDatabase();
+
   const isProd = process.env.NODE_ENV === 'production';
 
   if (!isProd) {
@@ -968,5 +1118,13 @@ async function start() {
     console.log(`Quest Shanghai Immersion Full-Stack Server running on http://0.0.0.0:${PORT}`);
   });
 }
+
+// Best-effort flush of pending changes when Render stops the container
+process.on('SIGTERM', () => {
+  void pushDatabaseToGitHub();
+});
+process.on('SIGINT', () => {
+  void pushDatabaseToGitHub();
+});
 
 start();
