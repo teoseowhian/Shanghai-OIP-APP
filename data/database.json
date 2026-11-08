@@ -243,15 +243,15 @@
       "name": "Lim Xuan Zheng Jacky",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
+      "coins": 0,
       "questsCompleted": 3,
       "roomNumber": "Room 9",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794181924505",
+      "studentName": "Selected Cohort",
+      "delta": -10,
+      "quest": "Curfew Infraction (Returned past 22:30)",
+      "time": "Just now",
+      "timestamp": 1794181924505
+    },
     {
       "id": "act_1794181899554",
       "studentName": "Selected Cohort",
