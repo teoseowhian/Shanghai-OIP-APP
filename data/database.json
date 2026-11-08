@@ -175,15 +175,15 @@
       "name": "Ren ZhuoJing (Assis)",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 5,
-      "questsCompleted": 1,
+      "coins": 15,
+      "questsCompleted": 2,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 5,
-          "cumulativeGrade": 0.25
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794132015047",
+      "studentName": "Selected Cohort",
+      "delta": 10,
+      "quest": "Good leader ship",
+      "time": "Just now",
+      "timestamp": 1794132015047
+    },
     {
       "id": "act_1794131992485",
       "studentName": "Selected Cohort",
