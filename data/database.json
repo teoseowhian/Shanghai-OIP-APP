@@ -680,7 +680,7 @@
       "studentId": "s2",
       "studentName": "Ganesan Mohanapriya",
       "questId": "q2",
-      "questTitle": "Maglev 300 km/h Speed Run (Optional Free-Time)",
+      "questTitle": "Maglev 300 km/h Speed Run",
       "coins": 20,
       "badgeName": "Sonic Levitation",
       "badgeLevel": "Gold",
@@ -718,7 +718,7 @@
       "id": "a_arrival_card",
       "author": "Teo Seow Hian",
       "role": "Faculty-in-Charge",
-      "timestamp": "Action Required • Due Friday",
+      "timestamp": "Immediate Action • Due Friday",
       "title": "🚨 China Digital Arrival Card Submission Required",
       "content": "Dear all, please help to enter the arrival card as per address: https://s.nia.gov.cn/ArrivalCardFillingPhone/ \n• Invitation party: Shanghai University\n• Phone number: 18516246729\nSee if you can complete by this Friday!",
       "priority": "urgent"
@@ -738,7 +738,7 @@
       "role": "Class Rep",
       "timestamp": "Today at 08:00",
       "title": "Morning Roll Call at 08:30 sharp in Lobby!",
-      "content": "Good morning everyone! Please remember your passport cards and student passes. We head to Shanghai University (SHU) for the morning orientation and cultural workshops.",
+      "content": "Good morning everyone! Please remember your passport cards and student passes. SHU-CIE transport departs on schedule for Shanghai University orientation, Taiji workshop and AHRI talk.",
       "priority": "urgent"
     },
     {
@@ -762,44 +762,12 @@
   ],
   "activityLog": [
     {
-      "id": "act_1794100522185",
-      "studentName": "All 29 Students",
-      "delta": 0,
-      "quest": "Cohort Coins Reset by Leader",
-      "time": "Just now",
-      "timestamp": 1794100522185
-    },
-    {
-      "id": "act_1794100512113",
-      "studentName": "Team Dragon",
-      "delta": 5,
-      "quest": "Test Dragon Award",
-      "time": "Just now",
-      "timestamp": 1794100512113
-    },
-    {
-      "id": "act_1794100150596",
-      "studentName": "All 29 Students",
-      "delta": 0,
-      "quest": "Cohort Coins Reset by Leader",
-      "time": "Just now",
-      "timestamp": 1794100150596
-    },
-    {
-      "id": "act_1793491252645",
-      "studentName": "Selected Cohort",
-      "delta": 15,
-      "quest": "Completed Immersion Task",
-      "time": "Just now",
-      "timestamp": 1793491252645
-    },
-    {
       "id": "act_1",
       "studentName": "Latasha Srinidthi Cliffton",
       "delta": 15,
       "quest": "Approved: The Great Xiaolongbao Quest",
       "time": "10 mins ago",
-      "timestamp": 1793490579484
+      "timestamp": 1794131216096
     },
     {
       "id": "act_2",
@@ -807,7 +775,7 @@
       "delta": 0,
       "quest": "Submitted Claim: Maglev 300 km/h Speed Run (Pending Review)",
       "time": "25 mins ago",
-      "timestamp": 1793489679484
+      "timestamp": 1794130316096
     },
     {
       "id": "act_3",
@@ -815,7 +783,7 @@
       "delta": 20,
       "quest": "Approved: Dialect Dynamo Street Test",
       "time": "1 hr ago",
-      "timestamp": 1793487579484
+      "timestamp": 1794128216096
     },
     {
       "id": "act_4",
@@ -823,7 +791,7 @@
       "delta": 15,
       "quest": "Approved: Budget Group Receipt Audit",
       "time": "2 hrs ago",
-      "timestamp": 1793483979484
+      "timestamp": 1794124616096
     }
   ]
 }
