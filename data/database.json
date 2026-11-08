@@ -396,15 +396,15 @@
       "name": "Kenny Lim Tian Yong",
       "avatar": "🧑🏻‍🎨",
       "squad": "Team Maglev",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 12",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794181276414",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfast",
+      "time": "Just now",
+      "timestamp": 1794181276414
+    },
     {
       "id": "act_1794181237003",
       "studentName": "Selected Cohort",
