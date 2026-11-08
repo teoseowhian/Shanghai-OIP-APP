@@ -175,15 +175,15 @@
       "name": "Ren ZhuoJing (Assis)",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 20,
-      "questsCompleted": 3,
+      "coins": 25,
+      "questsCompleted": 4,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 20,
-          "cumulativeGrade": 1
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -192,15 +192,15 @@
       "name": "Beh Li Enn",
       "avatar": "👩🏻‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -209,15 +209,15 @@
       "name": "Kong Tzing Enn",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 8",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -226,15 +226,15 @@
       "name": "Niya Danisyah Binte Zulkiflee",
       "avatar": "👩🏽‍🎓",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 8",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -243,15 +243,15 @@
       "name": "Lim Xuan Zheng Jacky",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 9",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -260,15 +260,15 @@
       "name": "Ryyan Bin Saleehullah",
       "avatar": "🧑🏽‍🍳",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 9",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -277,15 +277,15 @@
       "name": "Ifah Zakirah Binte Asri",
       "avatar": "👩🏽‍💼",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 10",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -294,15 +294,15 @@
       "name": "Siti Alisha Natasha Binte Zaini",
       "avatar": "👩🏽‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 10",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -311,15 +311,15 @@
       "name": "Ng Kim Yong",
       "avatar": "🧑🏻‍🏫",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 3",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -328,15 +328,15 @@
       "name": "Lim Jia En",
       "avatar": "👩🏻‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 15,
+      "questsCompleted": 3,
       "roomNumber": "Room 3",
       "attendanceStatus": "late",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794180968694",
+      "studentName": "Team Xiaolongbao",
+      "delta": 5,
+      "quest": "Day 1 breakfast",
+      "time": "Just now",
+      "timestamp": 1794180968694
+    },
     {
       "id": "act_1794180910769",
       "studentName": "Selected Cohort",
