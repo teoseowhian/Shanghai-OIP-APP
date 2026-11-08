@@ -39,15 +39,15 @@
       "name": "Bell Chai Jin Hui",
       "avatar": "👩🏻‍🎨",
       "squad": "Team Dragon",
-      "coins": 10,
+      "coins": 0,
       "questsCompleted": 2,
       "roomNumber": "Room 14",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 0,
+          "cumulativeGrade": 0
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794181797308",
+      "studentName": "Selected Cohort",
+      "delta": -10,
+      "quest": "Curfew Infraction (Returned past 22:30)",
+      "time": "Just now",
+      "timestamp": 1794181797308
+    },
     {
       "id": "act_1794181738184",
       "studentName": "Selected Cohort",
