@@ -762,6 +762,14 @@
   ],
   "activityLog": [
     {
+      "id": "act_1794130856388",
+      "studentName": "Latasha Srinidthi Cliffton (Class Rep)",
+      "delta": -25,
+      "quest": "durability test",
+      "time": "Just now",
+      "timestamp": 1794130856388
+    },
+    {
       "id": "act_1794100522185",
       "studentName": "All 29 Students",
       "delta": 0,
