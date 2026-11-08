@@ -328,15 +328,15 @@
       "name": "Lim Jia En",
       "avatar": "👩🏻‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 3,
+      "coins": 15,
+      "questsCompleted": 4,
       "roomNumber": "Room 3",
       "attendanceStatus": "late",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794181106989",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakast",
+      "time": "Just now",
+      "timestamp": 1794181106989
+    },
     {
       "id": "act_1794181075434",
       "studentName": "Selected Cohort",
