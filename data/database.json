@@ -90,15 +90,15 @@
       "name": "Kagen Sew Wei Zhao",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Dragon",
-      "coins": 10,
-      "questsCompleted": 2,
+      "coins": 25,
+      "questsCompleted": 3,
       "roomNumber": "Room 4",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794182792183",
+      "studentName": "Selected Cohort",
+      "delta": 15,
+      "quest": "Breakfast",
+      "time": "Just now",
+      "timestamp": 1794182792183
+    },
     {
       "id": "act_1794182755460",
       "studentName": "Selected Cohort",
