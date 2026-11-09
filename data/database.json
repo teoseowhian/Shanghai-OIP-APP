@@ -379,15 +379,15 @@
       "name": "Emmanuel Bagyam",
       "avatar": "🧑🏾‍💻",
       "squad": "Team Maglev",
-      "coins": 20,
-      "questsCompleted": 4,
+      "coins": 25,
+      "questsCompleted": 5,
       "roomNumber": "Room 12",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 20,
-          "cumulativeGrade": 1
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794268259206",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfast Day 2",
+      "time": "Just now",
+      "timestamp": 1794268259206
+    },
     {
       "id": "act_1794268220806",
       "studentName": "Selected Cohort",
