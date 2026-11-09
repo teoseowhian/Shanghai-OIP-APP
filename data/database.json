@@ -175,15 +175,15 @@
       "name": "Ren ZhuoJing (Assis)",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 25,
-      "questsCompleted": 5,
+      "coins": 30,
+      "questsCompleted": 6,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 25,
-          "cumulativeGrade": 1.25
+          "coins": 30,
+          "cumulativeGrade": 1.5
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794268148820",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfast Day 2",
+      "time": "Just now",
+      "timestamp": 1794268148820
+    },
     {
       "id": "act_1794267600615",
       "studentName": "Selected Cohort",
