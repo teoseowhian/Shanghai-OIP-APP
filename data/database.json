@@ -294,15 +294,15 @@
       "name": "Siti Alisha Natasha Binte Zaini",
       "avatar": "👩🏽‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 10,
-      "questsCompleted": 3,
+      "coins": 15,
+      "questsCompleted": 4,
       "roomNumber": "Room 10",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 10,
-          "cumulativeGrade": 0.5
+          "coins": 15,
+          "cumulativeGrade": 0.75
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794182954793",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfast",
+      "time": "Just now",
+      "timestamp": 1794182954793
+    },
     {
       "id": "act_1794182910494",
       "studentName": "Selected Cohort",
