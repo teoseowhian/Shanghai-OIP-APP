@@ -413,15 +413,15 @@
       "name": "Chua Yuan Kai Brayden",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Maglev",
-      "coins": 15,
-      "questsCompleted": 3,
+      "coins": 20,
+      "questsCompleted": 4,
       "roomNumber": "Room 13",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 15,
-          "cumulativeGrade": 0.75
+          "coins": 20,
+          "cumulativeGrade": 1
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794267212662",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfasr Day 2",
+      "time": "Just now",
+      "timestamp": 1794267212662
+    },
     {
       "id": "act_1794264907846",
       "studentName": "All 29 Students",
