@@ -192,15 +192,15 @@
       "name": "Beh Li Enn",
       "avatar": "👩🏻‍🔬",
       "squad": "Team Xiaolongbao",
-      "coins": 30,
-      "questsCompleted": 7,
+      "coins": 40,
+      "questsCompleted": 8,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 30,
-          "cumulativeGrade": 1.5
+          "coins": 40,
+          "cumulativeGrade": 2
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794415907736",
+      "studentName": "Selected Cohort",
+      "delta": 10,
+      "quest": "Exemplary Team Spirit & Buddy Care",
+      "time": "Just now",
+      "timestamp": 1794415907736
+    },
     {
       "id": "act_1794415817119",
       "studentName": "Selected Cohort",
