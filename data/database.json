@@ -413,15 +413,15 @@
       "name": "Chua Yuan Kai Brayden",
       "avatar": "🧑🏻‍🚀",
       "squad": "Team Maglev",
-      "coins": 20,
-      "questsCompleted": 4,
+      "coins": 25,
+      "questsCompleted": 5,
       "roomNumber": "Room 13",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 20,
-          "cumulativeGrade": 1
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1794355800003",
+      "studentName": "Selected Cohort",
+      "delta": 5,
+      "quest": "Breakfast",
+      "time": "Just now",
+      "timestamp": 1794355800003
+    },
     {
       "id": "act_1794268352390",
       "studentName": "Selected Cohort",
