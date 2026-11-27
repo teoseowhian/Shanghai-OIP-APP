@@ -158,15 +158,15 @@
       "name": "Ooi Kai Xuan Clarise",
       "avatar": "👩🏻‍🍳",
       "squad": "Team Dragon",
-      "coins": 0,
-      "questsCompleted": 0,
+      "coins": 25,
+      "questsCompleted": 1,
       "roomNumber": "Room 6",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 0,
-          "cumulativeGrade": 0
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1795760732001",
+      "studentName": "Selected Cohort",
+      "delta": 25,
+      "quest": "Completed Immersion Task",
+      "time": "Just now",
+      "timestamp": 1795760732001
+    },
     {
       "id": "act_1795760708542",
       "studentName": "Selected Cohort",
