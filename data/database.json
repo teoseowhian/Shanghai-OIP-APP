@@ -175,15 +175,15 @@
       "name": "Ren ZhuoJing (Assis)",
       "avatar": "🧑🏻‍💻",
       "squad": "Team Xiaolongbao",
-      "coins": 0,
-      "questsCompleted": 0,
+      "coins": 25,
+      "questsCompleted": 1,
       "roomNumber": "Room 7",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 0,
-          "cumulativeGrade": 0
+          "coins": 25,
+          "cumulativeGrade": 1.25
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1795760683110",
+      "studentName": "Selected Cohort",
+      "delta": 25,
+      "quest": "Completed Immersion Task",
+      "time": "Just now",
+      "timestamp": 1795760683110
+    },
     {
       "id": "act_1795760657513",
       "studentName": "Selected Cohort",
