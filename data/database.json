@@ -141,15 +141,15 @@
       "name": "Tan Rui Xin Felice",
       "avatar": "👩🏻‍🎓",
       "squad": "Team Dragon",
-      "coins": 0,
-      "questsCompleted": 0,
+      "coins": 20,
+      "questsCompleted": 1,
       "roomNumber": "Room 6",
       "attendanceStatus": "present",
       "coinHistory": [
         {
           "day": "Nov 8 (Arr)",
-          "coins": 0,
-          "cumulativeGrade": 0
+          "coins": 20,
+          "cumulativeGrade": 1
         }
       ]
     },
@@ -761,6 +761,14 @@
     }
   ],
   "activityLog": [
+    {
+      "id": "act_1795760708542",
+      "studentName": "Selected Cohort",
+      "delta": 20,
+      "quest": "Completed Immersion Task",
+      "time": "Just now",
+      "timestamp": 1795760708542
+    },
     {
       "id": "act_1795760683110",
       "studentName": "Selected Cohort",
